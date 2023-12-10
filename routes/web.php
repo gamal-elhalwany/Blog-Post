@@ -30,6 +30,7 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('post', PostController::class);
     Route::post('status/{post}', [PostController::class, 'postStatus'])->name('post.status');
+    Route::get('inactivated', [PostController::class, 'inactivatedPosts'])->name('post.inactivated');
 });
 
 require __DIR__.'/auth.php';

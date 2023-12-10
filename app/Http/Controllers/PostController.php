@@ -34,10 +34,9 @@ class PostController extends Controller
             $query->whereBetween('created_at', [$startDate, $endDate]);
         }
 
-        $posts = $query->get();
+        $posts = $query->where('status', 'activate')->get();
 
         return view('posts.index', compact('posts'));
-        // At last you have to make a page for the Inactivated Posts.
     }
 
     /**
@@ -143,5 +142,11 @@ class PostController extends Controller
             return redirect()->back()->with('success', 'Post Deleted Successfully.');
         }
         return redirect()->back()->with('error', 'You are not allow to this action!');
+    }
+
+    public function inactivatedPosts ()
+    {
+        $posts = Post::where('status', 'inactivate')->get();
+        return view('posts.inactive-posts', ['posts' => $posts])->with('success', 'Post Published Successfully.');
     }
 }

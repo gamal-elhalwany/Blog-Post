@@ -14,6 +14,11 @@
                         <li class="nav-item" style="display: inline-block">
                             <a href="{{ route('post.index') }}" class="nav-link">Home</a>
                         </li>
+                        @if (auth()->user()->posts()->where('status', 'inactivate')->count())
+                        <li class="nav-item" style="display: inline-block">
+                            <a href="{{ route('post.inactivated') }}" class="nav-link">Inactivated posts</a>
+                        </li>
+                        @endif
                     </ul>
                 </div>
             </div>
