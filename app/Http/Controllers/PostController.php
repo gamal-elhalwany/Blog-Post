@@ -16,8 +16,6 @@ class PostController extends Controller
      */
     public function index(Request $request)
     {
-        // $posts = Post::where('status', 'Activate')->get();
-
         $query = Post::query();
 
         // Filter by user names
@@ -35,7 +33,7 @@ class PostController extends Controller
             $query->whereBetween('created_at', [$startDate, $endDate]);
         }
 
-        $posts = $query->where('status', 'activate')->get();
+        $posts = $query->where('status', 'active')->get();
 
         return view('posts.index', compact('posts'));
     }

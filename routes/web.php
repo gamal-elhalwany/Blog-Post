@@ -15,8 +15,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+
+Route::get('/', function ()
+{
+    return view('home.index');
 });
 
 Route::get('/dashboard', function () {
@@ -29,6 +31,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     Route::resource('post', PostController::class);
+
     Route::post('status/{post}', [PostController::class, 'postStatus'])->name('post.status');
     Route::get('inactivated', [PostController::class, 'inactivatedPosts'])->name('post.inactivated');
 });

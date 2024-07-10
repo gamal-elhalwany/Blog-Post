@@ -22,25 +22,22 @@
                 <div class="col-md-6 offset-md-3 mt-4 mb-4">
                     <div class="search-form">
                         <form action="" method="GET">
-                            {{-- <div class="form-group">
-                                <input type="text" name="search" class="form-control rounded-lg" placeholder="Search">
-                            </div> --}}
                             <div class="form-group">
-                                <label for="user_name">Search by User Name:</label>
-                                <input type="text" id="user_name" name="user_name" class="form-control" placeholder="Enter user name">
+                                <label for="user_name">Search by user name:</label>
+                                <input class="form-control rounded-lg border-0 shadow-md" type="text" id="user_name" name="user_name" placeholder="Enter user name">
                             </div>
 
                             <div class="form-group">
-                                <label for="start_date">Start Date:</label>
-                                <input type="date" id="start_date" name="start_date" class="form-control">
+                                <label for="start_date">Start date:</label>
+                                <input type="date" id="start_date" name="start_date" class="form-control rounded-lg border-0 shadow-md">
                             </div>
 
                             <div class="form-group">
-                                <label for="end_date">End Date:</label>
-                                <input type="date" id="end_date" name="end_date" class="form-control">
+                                <label for="end_date">End date:</label>
+                                <input type="date" id="end_date" name="end_date" class="form-control rounded-lg border-0 shadow-md">
                             </div>
 
-                            <button type="submit" class="btn btn-outline-primary mt-3">Search</button
+                            <button type="submit" class="btn btn-outline-primary mt-3">Search</button>
                         </form>
                     </div>
                 </div>

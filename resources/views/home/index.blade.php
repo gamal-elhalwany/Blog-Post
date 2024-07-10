@@ -1,0 +1,11 @@
+@extends('layouts.front.front-layout')
+@section('title', 'NEWSROOM')
+@section('content')
+    @include('home.partials.topbar')
+    @include('home.partials.navbar')
+    @include('home.partials.topNewsSlider')
+    @include('home.partials.mainNewsSlider')
+    @include('home.partials.featuredNewsSlider')
+    @include('home.partials.categoryNewsSlider')
+    @include('home.partials.newsWithSidebar')
+@endsection
