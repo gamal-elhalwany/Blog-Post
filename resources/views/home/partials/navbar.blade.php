@@ -13,10 +13,10 @@
                 <a href="category.html" class="nav-item nav-link">Categories</a>
                 <a href="single.html" class="nav-item nav-link">Single News</a>
                 <div class="nav-item dropdown">
-                    <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Dropdown</a>
+                    <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Options</a>
                     <div class="dropdown-menu rounded-0 m-0">
-                        <a href="#" class="dropdown-item">Menu item 1</a>
-                        <a href="#" class="dropdown-item">Menu item 2</a>
+                        <a href="{{route('category.create')}}" class="dropdown-item">Create Category</a>
+                        <a href="{{route('post.create')}}" class="dropdown-item">Create Post</a>
                         <a href="#" class="dropdown-item">Menu item 3</a>
                     </div>
                 </div>

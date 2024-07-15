@@ -2,6 +2,25 @@
 <div class="container-fluid py-3">
     <div class="container">
         <div class="row">
+            @if($posts->count())
+            <div class="col-lg-8">
+                <div class="owl-carousel owl-carousel-2 carousel-item-1 position-relative mb-3 mb-lg-0">
+                    @foreach($posts as $post)
+                    <div class="position-relative overflow-hidden" style="height: 435px;">
+                        <img class="img-fluid h-100" src="{{asset('storage/' . $post->image)}}" style="object-fit: cover;">
+                        <div class="overlay">
+                            <div class="mb-1">
+                                <a class="text-white" href="{{route('category.show', $post->category->slug)}}">Technology</a>
+                                <span class="px-2 text-white">/</span>
+                                <a class="text-white" href="java::void()">{{$post->created_at->diffforHumans()}}</a>
+                            </div>
+                            <a class="h2 m-0 text-white font-weight-bold" href="">{{$post->title}}</a>
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
+            </div>
+            @else
             <div class="col-lg-8">
                 <div class="owl-carousel owl-carousel-2 carousel-item-1 position-relative mb-3 mb-lg-0">
                     <div class="position-relative overflow-hidden" style="height: 435px;">
@@ -28,6 +47,7 @@
                     </div>
                 </div>
             </div>
+            @endif
             <div class="col-lg-4">
                 <div class="d-flex align-items-center justify-content-between bg-light py-2 px-4 mb-3">
                     <h3 class="m-0">Categories</h3>
