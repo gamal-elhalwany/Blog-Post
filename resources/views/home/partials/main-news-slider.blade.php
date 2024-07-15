@@ -5,16 +5,16 @@
             @if($posts->count())
             <div class="col-lg-8">
                 <div class="owl-carousel owl-carousel-2 carousel-item-1 position-relative mb-3 mb-lg-0">
-                    @foreach($posts as $post)
+                    @foreach($posts->take(3) as $post)
                     <div class="position-relative overflow-hidden" style="height: 435px;">
                         <img class="img-fluid h-100" src="{{asset('storage/' . $post->image)}}" style="object-fit: cover;">
                         <div class="overlay">
                             <div class="mb-1">
-                                <a class="text-white" href="{{route('category.show', $post->category->slug)}}">Technology</a>
+                                <a class="text-white" href="{{route('category.show', $post->category->slug)}}">{{$post->category->name}}</a>
                                 <span class="px-2 text-white">/</span>
                                 <a class="text-white" href="java::void()">{{$post->created_at->diffforHumans()}}</a>
                             </div>
-                            <a class="h2 m-0 text-white font-weight-bold" href="">{{$post->title}}</a>
+                            <a class="h2 m-0 text-white font-weight-bold" href="{{route('post.show', $post->id)}}">{{$post->title}}</a>
                         </div>
                     </div>
                     @endforeach

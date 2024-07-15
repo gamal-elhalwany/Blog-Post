@@ -17,9 +17,9 @@ class PostController extends Controller
      */
     public function index(Request $request)
     {
-        $now = Carbon::now();
-        $now->setTimezone('Africa/Cairo');
-        $now->format('Y-m-d H:i:s A');
+        // $now = Carbon::now();
+        // $now->setTimezone('Africa/Cairo');
+        // $now->format('Y-m-d H:i:s A');
 
         $query = Post::query();
 
@@ -40,7 +40,7 @@ class PostController extends Controller
 
         $posts = $query->where('status', 'active')->latest()->get();
         $categories = Category::all();
-        return view('home.index', compact('posts', 'now', 'categories'));
+        return view('home.index', compact('posts', 'categories'));
     }
 
     /**
@@ -88,9 +88,10 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Post $post)
     {
-        //
+        // return view('dashboard.posts.show', compact('post'));
+        return 'Hello I\'m the post number ' . $post->id . "<h2>{$post->title}</h2>";
     }
 
     /**
