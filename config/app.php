@@ -16,6 +16,7 @@ return [
     */
 
     'name' => env('APP_NAME', 'NEWSROOM'),
+    'developer' => env('APP_DEVELOPER', 'Gamal El_halwany'),
 
     /*
     |--------------------------------------------------------------------------

@@ -17,10 +17,6 @@ class PostController extends Controller
      */
     public function index(Request $request)
     {
-        // $now = Carbon::now();
-        // $now->setTimezone('Africa/Cairo');
-        // $now->format('Y-m-d H:i:s A');
-
         $query = Post::query();
 
         // Filter by user names
@@ -38,9 +34,11 @@ class PostController extends Controller
             $query->whereBetween('created_at', [$startDate, $endDate]);
         }
 
-        $posts = $query->where('status', 'active')->latest()->get();
         $categories = Category::all();
-        return view('home.index', compact('posts', 'categories'));
+
+        $topSliderPosts = $query->where('status', 'active')->latest()->take(6)->get();
+        $mainSliderPosts = $query->where('status', 'active')->latest()->skip(6)->get();
+        return view('home.index', compact('topSliderPosts', 'mainSliderPosts', 'categories'));
     }
 
     /**
@@ -50,8 +48,12 @@ class PostController extends Controller
      */
     public function create()
     {
-        $categories = Category::all();
-        return view('dashboard.posts.create', compact('categories'));
+        $user = auth()->user();
+        if ($user) {
+            $categories = Category::all();
+            return view('dashboard.posts.create', compact('categories'));
+        }
+        return redirect()->route('login');
     }
 
     /**
@@ -62,24 +64,28 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'title' => 'required|min:3|max:255|unique:posts,title',
-            'description' => 'required|min:3',
-            'image' => 'required|image|mimes:jpeg,png,gif,jpg,webp',
-            'category_id' => ['required', 'exists:categories,id'],
-        ]);
+        $user = auth()->user();
+        if ($user) {
+            $request->validate([
+                'title' => 'required|min:3|max:255|unique:posts,title',
+                'description' => 'required|min:3',
+                'image' => 'required|image|mimes:jpeg,png,gif,jpg,webp',
+                'category_id' => ['required', 'exists:categories,id'],
+            ]);
 
-        $file = $request->file('image');
-        $path = $file->store('uploads/posts', 'public');
-        Post::create([
-            'title' => $request->get('title'),
-            'description' => $request->get('description'),
-            'image' => $path,
-            'user_id' => auth()->user()->id,
-            'category_id' => $request->category_id,
-        ]);
+            $file = $request->file('image');
+            $path = $file->store('uploads/posts', 'public');
+            Post::create([
+                'title' => $request->get('title'),
+                'description' => $request->get('description'),
+                'image' => $path,
+                'user_id' => auth()->user()->id,
+                'category_id' => $request->category_id,
+            ]);
 
-        return redirect()->route('post.index')->with('success', 'Post created successfully.');
+            return redirect()->route('post.index')->with('success', 'Post created successfully.');
+        }
+        return redirect()->route('login');
     }
 
     /**
@@ -90,8 +96,7 @@ class PostController extends Controller
      */
     public function show(Post $post)
     {
-        // return view('dashboard.posts.show', compact('post'));
-        return 'Hello I\'m the post number ' . $post->id . "<h2>{$post->title}</h2>";
+        return view('dashboard.posts.show', compact('post'));
     }
 
     /**
@@ -102,8 +107,12 @@ class PostController extends Controller
      */
     public function edit($id)
     {
-        $post = Post::findOrFail($id);
-        return view('posts.edit', ['post' => $post]);
+        $user = auth()->user();
+        if ($user) {
+            $post = Post::findOrFail($id);
+            return view('posts.edit', ['post' => $post]);
+        }
+        return redirect()->route('login');
     }
 
     /**
@@ -115,6 +124,9 @@ class PostController extends Controller
      */
     public function update(Request $request, $id)
     {
+        /**
+         * TODO: Add a user authentication check.
+         */
         $request->validate([
             'title' => 'sometimes|required|min:3|max:255|unique:posts,title',
             'description' => 'sometimes|required|min:3',
@@ -154,7 +166,13 @@ class PostController extends Controller
 
     public function inactivatedPosts()
     {
-        $posts = Post::where('status', 'inactivate')->get();
-        return view('posts.inactive-posts', ['posts' => $posts])->with('success', 'Post Published Successfully.');
+        $user = auth()->user();
+        if ($user) {
+            $posts = Post::where('user_id', $user->id)->where('status',
+            '!=', 'active')->get();
+            // $posts = Post::where('status', 'inactivate')->get();
+            return view('posts.inactive-posts', ['posts' => $posts])->with('success', 'Post Published Successfully.');
+        }
+        return redirect()->route('login');
     }
 }

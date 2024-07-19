@@ -1,9 +1,7 @@
 @extends('layouts.front.front-layout')
 @section('title', 'NEWSROOM - CREATE CATEGORY')
 @section('content')
-<x-topbar />
-@include('home.partials.navbar')
-<div class="container-fluid">
+<div class="container-fluid p-5">
     <div class="row justify-content-center">
         <div class="col-md-8 col-xs-12">
             @if(session('success'))
@@ -21,6 +19,18 @@
                     <label for="name">name</label>
                     <input type="text" name="name" class="form-control">
                     @error('name')
+                    <p class="text-red-500 mt-3 mb-3">{{ $message }}</p>
+                    @enderror
+                </div>
+                <div class="form-group">
+                    <label for="name">Parent Category</label>
+                    <select class="form-control" name="parent_id">
+                        <option value="">Select Parent Category</option>
+                        @foreach($categories as $category)
+                        <option value="{{ $category->id }}">{{ $category->name }}</option>
+                        @endforeach
+                    </select>
+                    @error('parent_id')
                     <p class="text-red-500 mt-3 mb-3">{{ $message }}</p>
                     @enderror
                 </div>
@@ -43,6 +53,7 @@
                 </div>
             </form>
         </div>
+        @include('home.partials.Sidebar')
     </div>
 </div>
 @endsection
