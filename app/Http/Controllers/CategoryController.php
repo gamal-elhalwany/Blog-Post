@@ -27,7 +27,8 @@ class CategoryController extends Controller
     {
         $user = auth()->user();
         if ($user) {
-            return view('dashboard.category.create');
+            $categories = Category::all();
+            return view('dashboard.category.create', compact('categories'));
         }
         return redirect()->route('login');
     }

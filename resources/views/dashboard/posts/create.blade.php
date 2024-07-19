@@ -1,14 +1,20 @@
 @extends('layouts.front.front-layout')
-@section('title', 'NEWSROOM - CREATE CATEGORY')
+@section('title', 'NEWSROOM - CREATE POSTS')
 @section('content')
-<x-topbar />
-@include('home.partials.navbar')
-<div class="container-fluid">
+<div class="container-fluid p-5">
     <div class="row justify-content-center">
         <div class="col-md-8 col-xs-12">
             @if(session('success'))
             <div class="alert alert-success alert-dismissible fade show" role="alert">
                 <strong>{{ session('success') }}</strong>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            @endif
+            @if(session('error'))
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <strong>{{ session('error') }}</strong>
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -57,6 +63,7 @@
             </form>
 
         </div>
+        @include('home.partials.Sidebar')
     </div>
 </div>
 @endsection

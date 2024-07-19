@@ -10,7 +10,7 @@ class Category extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'name', 'slug', 'description'
+        'name', 'slug', 'description', 'parent_id'
     ];
 
     public function posts()
@@ -18,10 +18,31 @@ class Category extends Model
         return $this->hasMany(Post::class);
     }
 
+    public function children()
+    {
+        return $this->hasMany(Category::class, 'parent_id');
+    }
+
+    public function parent()
+    {
+        return $this->belongsTo(Category::class, 'parent_id');
+    }
+
     public static function booted()
     {
-        static::creating(function(Category $category){
+        static::creating(function (Category $category) {
             $category->slug = Str::slug($category->name);
         });
+    }
+
+    public function getDefaultImageAttribute()
+    {
+        if (!$this->image) {
+            return 'https://www.incathlab.com/images/products/default_product.png';
+        }
+        if (Str::startsWith($this->image, ['https://', 'http:/'])) {
+            return $this->image;
+        }
+        return asset('storage/' . $this->image);
     }
 }

@@ -1,8 +1,6 @@
 @extends('layouts.front.front-layout')
-@section('title', 'NEWSROOM')
+@section('title', 'NEWSROOM - HOME')
 @section('content')
-    <x-topbar />
-    @include('home.partials.navbar')
     @include('home.partials.topNewsSlider')
     @include('home.partials.main-news-slider')
     @include('home.partials.featuredNewsSlider')

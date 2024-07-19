@@ -55,10 +55,10 @@
     </div>
     <!-- Ads End -->
 
-    <!-- Popular News Start -->
+    <!-- Trending News Start -->
     <div class="pb-3">
         <div class="bg-light py-2 px-4 mb-3">
-            <h3 class="m-0">Tranding</h3>
+            <h3 class="m-0">Trending</h3>
         </div>
         <div class="d-flex mb-3">
             <img src="{{asset('build/assets/img/news-100x100-1.jpg')}}" style="width: 100px; height: 100px; object-fit: cover;">
@@ -116,7 +116,7 @@
             </div>
         </div>
     </div>
-    <!-- Popular News End -->
+    <!-- Trending News End -->
 
     <!-- Tags Start -->
     <div class="pb-3">
