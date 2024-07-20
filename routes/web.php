@@ -47,8 +47,8 @@ Route::middleware('auth')->group(function () {
 
     // Comments Routes.
     Route::get('comments', [CommentsController::class, 'index'])->name('comments.index');
-    Route::post('comments', [CommentsController::class, 'store'])->name('comments.store');
-    Route::post('comments/{id}/replies', [CommentsController::class, 'storeReply'])->name('comments.replies');
+    Route::post('comments/{post}/comment', [CommentsController::class, 'store'])->name('comments.store');
+    Route::post('comments/{comment}/replies', [CommentsController::class, 'storeReply'])->name('comments.replies');
 });
 
 require __DIR__.'/auth.php';

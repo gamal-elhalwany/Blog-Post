@@ -96,7 +96,8 @@ class PostController extends Controller
      */
     public function show(Post $post)
     {
-        return view('dashboard.posts.show', compact('post'));
+        $comments = $post->comments->where('parent_id', null);
+        return view('dashboard.posts.show', compact('post', 'comments'));
     }
 
     /**
