@@ -1,6 +1,24 @@
 @extends('layouts.front.front-layout')
 @section('title', 'NEWSROOM - SINGLE POST')
 @section('content')
+
+@if(session()->has('error'))
+<div class="alert alert-danger alert-dismissible fade show" role="alert">
+    <strong>{{session('error')}}</strong>
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+@endif
+@if(session()->has('success'))
+<div class="alert alert-success alert-dismissible fade show" role="alert">
+    <strong>{{session()->get('success')}}</strong>
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+@endif
+
 <!-- News With Sidebar Start -->
 <div class="container-fluid py-3">
     <div class="container">
@@ -26,7 +44,7 @@
                 <!-- Comment List Start -->
                 <div class="bg-light mb-3" style="padding: 30px;">
                     <h3 class="mb-4">{{$post->comments->count()}} Comments</h3>
-                    @foreach ($post->comments->where('parent_id', null) as $comment)
+                    @foreach ($comments as $comment)
                     <div class="media mb-4">
                         <img src="img/user.jpg" alt="Image" class="img-fluid mr-3 mt-1" style="width: 45px;">
                         <div class="media-body">
@@ -46,7 +64,35 @@
                                         <div class="media-body">
                                             <h6><a href="">{{$reply->user->name}}</a> <small><i>{{$reply->created_at->diffforHumans()}}</i></small></h6>
                                             <p>{{$reply->comment}}</p>
-                                            <button class="btn btn-sm btn-outline-secondary reply-btn" data-id="{{$reply->id}}" id="reply-btn">Reply</button>
+                                            <button class="btn btn-sm btn-outline-secondary" data-id="{{$reply->id}}" id="reply-btn" onclick="toggleReply('{{$reply->id}}')">Reply</button>
+
+                                            <!-- Reply Form JR -->
+                                            <div class="reply-form-jr-{{$reply->id}}" id="reply-form-jr" style="display: none; margin-top:10px;">
+                                                <form action="{{route('comments.replies', $reply->id)}}" method="POST">
+                                                    @csrf
+                                                    <input type="hidden" name="post_id" value="{{$post->id}}">
+                                                    <div class="form-group">
+                                                        <textarea class="form-control" name="comment" rows="2" required></textarea>
+                                                    </div>
+                                                    <button type="submit" class="btn btn-primary btn-sm">Submit</button>
+                                                </form>
+                                            </div>
+
+                                            @foreach($reply->replies as $miniReply)
+                                            <!-- Replies -->
+                                            <div class="media">
+                                                <div class="media-body">
+                                                    <div class="media mt-4">
+                                                        <img src="img/user.jpg" alt="Image" class="img-fluid mr-3 mt-1" style="width: 45px;">
+                                                        <div class="media-body">
+                                                            <h6><a href="">{{$miniReply->user->name}}</a> <small><i>{{$miniReply->created_at->diffforHumans()}}</i></small></h6>
+                                                            <p>{{$miniReply->comment}}</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            @endforeach
+
                                         </div>
                                     </div>
                                 </div>
@@ -54,7 +100,7 @@
                             @endforeach
                             @endif
                             <!-- Reply Form -->
-                            <div class="reply-form" id="reply-form-{{$comment->id}}" style="display: none; margin-top:10px;">
+                            <div class="reply-form-{{$comment->id}}" id="reply-form-{{$comment->id}}" style="display: none; margin-top:10px;">
                                 <form action="{{route('comments.replies', $comment->id)}}" method="POST">
                                     @csrf
                                     <input type="hidden" name="post_id" value="{{$post->id}}">
@@ -73,9 +119,8 @@
                 <!-- Comment Form Start -->
                 <div class="bg-light mb-3" style="padding: 30px;">
                     <h3 class="mb-4">Leave a comment</h3>
-                    <form action="{{route('comments.store')}}" method="POST">
+                    <form action="{{route('comments.store', $post->id)}}" method="POST">
                         @csrf
-                        <input type="hidden" name="post_id" value="{{$post->id}}">
                         <div class="form-group">
                             <label for="name">Name *</label>
                             <input type="text" name="name" class="form-control" id="name">
@@ -114,4 +159,9 @@
     </div>
 </div>
 <!-- News With Sidebar End -->
+<script>
+    function toggleReply(replyId) {
+        $('.reply-form-jr-' + replyId).slideToggle();
+    }
+</script>
 @endsection

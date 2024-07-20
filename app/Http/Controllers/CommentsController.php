@@ -27,7 +27,7 @@ class CommentsController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request, Post $post)
     {
         $user = auth()->user();
         $request->validate([
@@ -37,10 +37,10 @@ class CommentsController extends Controller
         ]);
 
         if ($user) {
-            $comments = Comment::create([
+            $post->comments()->create([
                 'comment' => $request->comment,
                 'user_id' => $user->id,
-                'post_id' => $request->post_id,
+                'post_id' => $post->id,
                 'user_id' => $user->id,
             ]);
             return redirect()->back()->with('success', 'Your Comment added Successfully');
@@ -51,19 +51,19 @@ class CommentsController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function storeReply(Request $request, $id)
+    public function storeReply(Request $request, Comment $comment)
     {
         $user = auth()->user();
-        $comment = Comment::findOrFail($id);
         $request->validate([
             'comment' => 'required',
         ]);
+
         if ($user) {
-            $comment->create([
+            Comment::create([
                 'comment' => $request->comment,
                 'user_id' => $user->id,
                 'post_id' => $request->post_id,
-                'parent_id' => $id,
+                'parent_id' => $comment->id,
             ]);
             return redirect()->back()->with('success', 'Your Comment added Successfully');
         }
