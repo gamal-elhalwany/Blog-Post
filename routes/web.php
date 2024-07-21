@@ -49,6 +49,8 @@ Route::middleware('auth')->group(function () {
     Route::get('comments', [CommentsController::class, 'index'])->name('comments.index');
     Route::post('comments/{post}/comment', [CommentsController::class, 'store'])->name('comments.store');
     Route::post('comments/{comment}/replies', [CommentsController::class, 'storeReply'])->name('comments.replies');
+    Route::put('comments/{comment}/update', [CommentsController::class, 'update'])->name('comments.update');
+    Route::delete('comments/{comment}/delete', [CommentsController::class, 'destroy'])->name('comments.destroy');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

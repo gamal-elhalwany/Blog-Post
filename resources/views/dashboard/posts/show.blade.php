@@ -2,26 +2,27 @@
 @section('title', 'NEWSROOM - SINGLE POST')
 @section('content')
 
-@if(session()->has('error'))
-<div class="alert alert-danger alert-dismissible fade show" role="alert">
-    <strong>{{session('error')}}</strong>
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-    </button>
-</div>
-@endif
-@if(session()->has('success'))
-<div class="alert alert-success alert-dismissible fade show" role="alert">
-    <strong>{{session()->get('success')}}</strong>
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-    </button>
-</div>
-@endif
-
 <!-- News With Sidebar Start -->
 <div class="container-fluid py-3">
     <div class="container">
+
+        @if(session()->has('error'))
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <strong>{{session('error')}}</strong>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        @endif
+        @if(session()->has('success'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <strong>{{session()->get('success')}}</strong>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        @endif
+
         <div class="row">
             <div class="col-lg-8">
                 <!-- News Detail Start -->
@@ -49,7 +50,46 @@
                         <img src="img/user.jpg" alt="Image" class="img-fluid mr-3 mt-1" style="width: 45px;">
                         <div class="media-body">
                             <h6><a href="">{{$comment->user->name}}</a> <small><i>{{$comment->created_at->diffforHumans()}}</i></small></h6>
-                            <p>{{$comment->comment}}</p>
+                            <div class="comment-group">
+                                <span style="float: right;">
+                                    <button class="btn edit-btn" data-id="{{$comment->id}}">
+                                        edit
+                                    </button>
+                                </span>
+                                <span style="float: right;">
+                                    <form action="{{route('comments.destroy', $comment->id)}}" method="post">
+                                        @csrf
+                                        @method('delete')
+                                        <button type="submit" class="btn">delete</button>
+                                    </form>
+                                </span>
+                                <p>{{$comment->comment}}</p>
+                            </div>
+                            <!-- Reply Form -->
+                            <div class="reply-form-{{$comment->id}}" id="reply-form-{{$comment->id}}" style="display: none; margin-top:10px;">
+                                <form action="{{route('comments.replies', $comment->id)}}" method="POST">
+                                    @csrf
+                                    <input type="hidden" name="post_id" value="{{$post->id}}">
+                                    <div class="form-group">
+                                        <textarea class="form-control" name="comment" required></textarea>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary btn-sm">Submit</button>
+                                </form>
+                            </div>
+                            <!-- Edit Reply Form L1 -->
+                            <div class="edit-reply-form-{{$comment->id}}" id="reply-form-jr" style="display: none; margin-top:10px;">
+                                <form action="{{route('comments.update', $comment->id)}}" method="POST">
+                                    @csrf
+                                    @method('PUT')
+                                    <input type="hidden" name="post_id" value="{{$post->id}}">
+                                    <div class="form-group">
+                                        <textarea class="form-control" name="comment" required>
+                                        {{$comment->comment}}
+                                        </textarea>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary btn-sm">Submit</button>
+                                </form>
+                            </div>
                             <button class="btn btn-sm btn-outline-secondary reply-btn" data-id="{{$comment->id}}" id="reply-btn">Reply</button>
 
 
@@ -63,7 +103,21 @@
                                         <img src="img/user.jpg" alt="Image" class="img-fluid mr-3 mt-1" style="width: 45px;">
                                         <div class="media-body">
                                             <h6><a href="">{{$reply->user->name}}</a> <small><i>{{$reply->created_at->diffforHumans()}}</i></small></h6>
-                                            <p>{{$reply->comment}}</p>
+                                            <div class="comment-group">
+                                                <span style="float: right;">
+                                                    <button class="btn edit-btn" data-id="{{$reply->id}}">
+                                                        edit
+                                                    </button>
+                                                </span>
+                                                <span style="float: right;">
+                                                    <form action="{{route('comments.destroy', $reply->id)}}" method="post">
+                                                        @csrf
+                                                        @method('delete')
+                                                        <button type="submit" class="btn">delete</button>
+                                                    </form>
+                                                </span>
+                                                <p>{{$reply->comment}}</p>
+                                            </div>
                                             <button class="btn btn-sm btn-outline-secondary" data-id="{{$reply->id}}" id="reply-btn" onclick="toggleReply('{{$reply->id}}')">Reply</button>
 
                                             <!-- Reply Form JR -->
@@ -72,7 +126,22 @@
                                                     @csrf
                                                     <input type="hidden" name="post_id" value="{{$post->id}}">
                                                     <div class="form-group">
-                                                        <textarea class="form-control" name="comment" rows="2" required></textarea>
+                                                        <textarea class="form-control" name="comment" required></textarea>
+                                                    </div>
+                                                    <button type="submit" class="btn btn-primary btn-sm">Submit</button>
+                                                </form>
+                                            </div>
+
+                                            <!-- Edit Reply Form L2 -->
+                                            <div class="edit-reply-form-{{$reply->id}}" id="edit-reply-form-jr" style="display: none; margin-top:10px;">
+                                                <form action="{{route('comments.update', $reply->id)}}" method="POST">
+                                                    @csrf
+                                                    @method('PUT')
+                                                    <input type="hidden" name="post_id" value="{{$post->id}}">
+                                                    <div class="form-group">
+                                                        <textarea class="form-control" name="comment" required>
+                                                        {{$reply->comment}}
+                                                        </textarea>
                                                     </div>
                                                     <button type="submit" class="btn btn-primary btn-sm">Submit</button>
                                                 </form>
@@ -86,7 +155,35 @@
                                                         <img src="img/user.jpg" alt="Image" class="img-fluid mr-3 mt-1" style="width: 45px;">
                                                         <div class="media-body">
                                                             <h6><a href="">{{$miniReply->user->name}}</a> <small><i>{{$miniReply->created_at->diffforHumans()}}</i></small></h6>
-                                                            <p>{{$miniReply->comment}}</p>
+                                                            <div class="comment-group">
+                                                                <span style="float: right;">
+                                                                    <button class="btn edit-btn" data-id="{{$miniReply->id}}">
+                                                                        edit
+                                                                    </button>
+                                                                </span>
+                                                                <span style="float: right;">
+                                                                    <form action="{{route('comments.destroy', $miniReply->id)}}" method="post">
+                                                                        @csrf
+                                                                        @method('delete')
+                                                                        <button type="submit" class="btn">delete</button>
+                                                                    </form>
+                                                                </span>
+                                                                <p>{{$miniReply->comment}}</p>
+                                                            </div>
+                                                            <!-- Edit Reply Form L3 -->
+                                                            <div class="edit-reply-form-{{$miniReply->id}}" id="edit-reply-form-jr" style="display: none; margin-top:10px;">
+                                                                <form action="{{route('comments.update', $miniReply->id)}}" method="POST">
+                                                                    @csrf
+                                                                    @method('PUT')
+                                                                    <input type="hidden" name="post_id" value="{{$post->id}}">
+                                                                    <div class="form-group">
+                                                                        <textarea class="form-control" name="comment" required>
+                                                                        {{$miniReply->comment}}
+                                                                        </textarea>
+                                                                    </div>
+                                                                    <button type="submit" class="btn btn-primary btn-sm">Submit</button>
+                                                                </form>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -99,17 +196,6 @@
                             </div>
                             @endforeach
                             @endif
-                            <!-- Reply Form -->
-                            <div class="reply-form-{{$comment->id}}" id="reply-form-{{$comment->id}}" style="display: none; margin-top:10px;">
-                                <form action="{{route('comments.replies', $comment->id)}}" method="POST">
-                                    @csrf
-                                    <input type="hidden" name="post_id" value="{{$post->id}}">
-                                    <div class="form-group">
-                                        <textarea class="form-control" name="comment" rows="2" required></textarea>
-                                    </div>
-                                    <button type="submit" class="btn btn-primary btn-sm">Submit</button>
-                                </form>
-                            </div>
                         </div>
                     </div>
                     @endforeach
