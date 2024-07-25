@@ -28,21 +28,21 @@
                     <label for="title">Title</label>
                     <input type="text" name="title" class="form-control">
                     @error('title')
-                    <p class="text-red-500 mt-3 mb-3">{{ $message }}</p>
+                    <p class="text-danger mt-3 mb-3">{{ $message }}</p>
                     @enderror
                 </div>
                 <div class="form-group">
                     <label for="description">Description</label>
                     <textarea name="description" class="form-control"></textarea>
                     @error('description')
-                    <p class="text-red-500 mt-3 mb-3">{{ $message }}</p>
+                    <p class="text-danger mt-3 mb-3">{{ $message }}</p>
                     @enderror
                 </div>
                 <div class="form-group">
                     <label for="image">Image</label>
                     <input type="file" name="image" class="form-control">
                     @error('image')
-                    <p class="text-red-500 mt-3 mb-3">{{ $message }}</p>
+                    <p class="text-danger mt-3 mb-3">{{ $message }}</p>
                     @enderror
                 </div>
                 <div class="form-group">
@@ -53,7 +53,7 @@
                         <option value="{{ $category->id }}">{{ $category->name }}</option>
                         @endforeach
                     </select>
-                    @error('category')
+                    @error('category_id')
                     <p class="text-red-500 mt-3 mb-3">{{ $message }}</p>
                     @enderror
                 </div>

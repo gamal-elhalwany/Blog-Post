@@ -29,6 +29,7 @@
 
     <x-topbar />
     <x-navbar />
+    @yield('breadcrumb')
     @yield('content')
 
     <!-- Footer Start -->
