@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class CategoryController extends Controller
@@ -13,11 +12,7 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $user = auth()->user();
-        if ($user) {
-            return view('dashboard.category.index');
-        }
-        return redirect()->route('login');
+        //
     }
 
     /**
@@ -55,12 +50,14 @@ class CategoryController extends Controller
      */
     public function show(Category $category)
     {
-        // $user = auth()->user();
-        // if ($user) {
-        //     return view('dashboard.category.show', compact('category'));
-        // }
-        // return redirect()->route('login');
-        return 'This is the single ' . $category->name . ' Page. Welcome ' . auth()->user()->name;
+        $user = auth()->user();
+        if ($user) {
+            $posts = $category->posts()->paginate(14);
+            $section1 = $posts->slice(0, 4);
+            $section2 = $posts->slice(4, 10);
+            return view('dashboard.category.show', compact('category', 'posts', 'section1', 'section2'));
+        }
+        return redirect()->route('login');
     }
 
     /**
