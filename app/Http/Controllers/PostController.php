@@ -38,7 +38,14 @@ class PostController extends Controller
 
         $topSliderPosts = $query->where('status', 'active')->latest()->take(6)->get();
         $mainSliderPosts = $query->where('status', 'active')->latest()->skip(6)->get();
-        return view('home.index', compact('topSliderPosts', 'mainSliderPosts', 'categories'));
+
+        $categoryTechnologyPosts = Post::where('category_id', 1)->get()->take(4);
+        $categorySportsPosts = Post::where('category_id', 2)->get()->take(4);
+        $categoryBusinessPosts = Post::where('category_id', 4)->get()->take(4);
+        $categoryEntertainmentPosts = Post::where('category_id', 5)->get()->take(4);
+        // dd($categoryTechnologyPosts);
+
+        return view('home.index', compact('topSliderPosts', 'mainSliderPosts', 'categories', 'categoryBusinessPosts', 'categoryTechnologyPosts', 'categorySportsPosts', 'categoryEntertainmentPosts'));
     }
 
     /**
