@@ -39,13 +39,19 @@ class PostController extends Controller
         $topSliderPosts = $query->where('status', 'active')->latest()->take(6)->get();
         $mainSliderPosts = $query->where('status', 'active')->latest()->skip(6)->get();
 
+        // Category Mini Slider Posts.
         $categoryTechnologyPosts = Post::where('category_id', 1)->get()->take(4);
         $categorySportsPosts = Post::where('category_id', 2)->get()->take(4);
         $categoryBusinessPosts = Post::where('category_id', 4)->get()->take(4);
         $categoryEntertainmentPosts = Post::where('category_id', 5)->get()->take(4);
-        // dd($categoryTechnologyPosts);
 
-        return view('home.index', compact('topSliderPosts', 'mainSliderPosts', 'categories', 'categoryBusinessPosts', 'categoryTechnologyPosts', 'categorySportsPosts', 'categoryEntertainmentPosts'));
+        // Latest Posts Queries.
+        $latestPostsSection1 = Post::where('status', 'active')->latest()->take(1)->get();
+        $latestPostsSection1LastTwo = Post::where('status', 'active')->latest()->skip(1)->take(2)->get();
+        $latestPostsSection2 = Post::where('status', 'active')->latest()->skip(3)->take(1)->get();
+        $latestPostsSection2LastTwo = Post::where('status', 'active')->latest()->skip(4)->take(2)->get();
+
+        return view('home.index', compact('topSliderPosts', 'mainSliderPosts', 'categories', 'categoryBusinessPosts', 'categoryTechnologyPosts', 'categorySportsPosts', 'categoryEntertainmentPosts', 'latestPostsSection1', 'latestPostsSection1LastTwo', 'latestPostsSection2', 'latestPostsSection2LastTwo'));
     }
 
     /**

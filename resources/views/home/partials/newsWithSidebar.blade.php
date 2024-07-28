@@ -95,78 +95,65 @@
                             <a class="text-secondary font-weight-medium text-decoration-none" href="">View All</a>
                         </div>
                     </div>
+                    @foreach($latestPostsSection1 as $post)
                     <div class="col-lg-6">
                         <div class="position-relative mb-3">
-                            <img class="img-fluid w-100" src="{{asset('build/assets/img/news-500x280-5.jpg')}}" style="object-fit: cover;">
+                            <img class="img-fluid w-100" src="{{$post->default_image}}" style="object-fit: cover;  height: 210px;">
                             <div class="overlay position-relative bg-light">
                                 <div class="mb-2" style="font-size: 14px;">
-                                    <a href="">Technology</a>
+                                    <a href="{{route('category.show', $post->category->slug)}}">{{$post->category->name}}</a>
                                     <span class="px-1">/</span>
-                                    <span>January 01, 2045</span>
+                                    <span>{{$post->created_at->diffforHumans()}}</span>
                                 </div>
-                                <a class="h4" href="">Est stet amet ipsum stet clita rebum duo</a>
-                                <p class="m-0">Rebum dolore duo et vero ipsum clita, est ea sed duo diam ipsum, clita at justo, lorem amet vero eos sed sit...</p>
+                                <a class="h4" href="{{route('post.show', $post->id)}}">{{$post->title}}</a>
+                                <p class="m-0">{{Str::limit($post->description, 70)}}</p>
                             </div>
                         </div>
+                        @foreach($latestPostsSection1LastTwo as $post)
                         <div class="d-flex mb-3">
-                            <img src="{{asset('build/assets/img/news-100x100-5.jpg')}}" style="width: 100px; height: 100px; object-fit: cover;">
+                            <img src="{{$post->default_image}}" style="width: 100px; height: 100px; object-fit: cover;">
                             <div class="w-100 d-flex flex-column justify-content-center bg-light px-3" style="height: 100px;">
                                 <div class="mb-1" style="font-size: 13px;">
-                                    <a href="">Technology</a>
+                                    <a href="{{route('category.show', $post->category->slug)}}">{{$post->category->name}}</a>
                                     <span class="px-1">/</span>
-                                    <span>January 01, 2045</span>
+                                    <span>{{$post->created_at->diffforHumans()}}</span>
                                 </div>
-                                <a class="h6 m-0" href="">Lorem ipsum dolor sit amet consec adipis elit</a>
+                                <a class="h6 m-0" href="{{route('post.show', $post->id)}}">{{$post->title}}</a>
                             </div>
                         </div>
-                        <div class="d-flex mb-3">
-                            <img src="{{asset('build/assets/img/news-100x100-1.jpg')}}" style="width: 100px; height: 100px; object-fit: cover;">
-                            <div class="w-100 d-flex flex-column justify-content-center bg-light px-3" style="height: 100px;">
-                                <div class="mb-1" style="font-size: 13px;">
-                                    <a href="">Technology</a>
-                                    <span class="px-1">/</span>
-                                    <span>January 01, 2045</span>
-                                </div>
-                                <a class="h6 m-0" href="">Lorem ipsum dolor sit amet consec adipis elit</a>
-                            </div>
-                        </div>
+                        @endforeach
                     </div>
+                    @endforeach
+
+                    @foreach($latestPostsSection2 as $post)
                     <div class="col-lg-6">
                         <div class="position-relative mb-3">
-                            <img class="img-fluid w-100" src="{{asset('build/assets/img/news-500x280-6.jpg')}}" style="object-fit: cover;">
+                            <img class="img-fluid w-100" src="{{$post->default_image}}" style="object-fit: cover; height: 210px;">
                             <div class="overlay position-relative bg-light">
                                 <div class="mb-2" style="font-size: 14px;">
-                                    <a href="">Technology</a>
+                                    <a href="{{route('category.show', $post->category->slug)}}">{{$post->category->name}}</a>
                                     <span class="px-1">/</span>
-                                    <span>January 01, 2045</span>
+                                    <span>{{$post->created_at->diffforHumans()}}</span>
                                 </div>
-                                <a class="h4" href="">Est stet amet ipsum stet clita rebum duo</a>
-                                <p class="m-0">Rebum dolore duo et vero ipsum clita, est ea sed duo diam ipsum, clita at justo, lorem amet vero eos sed sit...</p>
+                                <a class="h4" href="{{route('post.show', $post->id)}}">{{$post->title}}</a>
+                                <p class="m-0">{{Str::limit($post->description, 70)}}</p>
                             </div>
                         </div>
+                        @foreach($latestPostsSection2LastTwo as $post)
                         <div class="d-flex mb-3">
-                            <img src="{{asset('build/assets/img/news-100x100-2.jpg')}}" style="width: 100px; height: 100px; object-fit: cover;">
+                            <img src="{{$post->default_image}}" style="width: 100px; height: 100px; object-fit: cover;">
                             <div class="w-100 d-flex flex-column justify-content-center bg-light px-3" style="height: 100px;">
                                 <div class="mb-1" style="font-size: 13px;">
-                                    <a href="">Technology</a>
+                                    <a href="{{route('category.show', $post->category->slug)}}">{{$post->category->name}}</a>
                                     <span class="px-1">/</span>
-                                    <span>January 01, 2045</span>
+                                    <span>{{$post->created_at->diffforHumans()}}</span>
                                 </div>
-                                <a class="h6 m-0" href="">Lorem ipsum dolor sit amet consec adipis elit</a>
+                                <a class="h6 m-0" href="{{route('post.show', $post->id)}}">{{$post->title}}</a>
                             </div>
                         </div>
-                        <div class="d-flex mb-3">
-                            <img src="{{asset('build/assets/img/news-100x100-3.jpg')}}" style="width: 100px; height: 100px; object-fit: cover;">
-                            <div class="w-100 d-flex flex-column justify-content-center bg-light px-3" style="height: 100px;">
-                                <div class="mb-1" style="font-size: 13px;">
-                                    <a href="">Technology</a>
-                                    <span class="px-1">/</span>
-                                    <span>January 01, 2045</span>
-                                </div>
-                                <a class="h6 m-0" href="">Lorem ipsum dolor sit amet consec adipis elit</a>
-                            </div>
-                        </div>
+                        @endforeach
                     </div>
+                    @endforeach
                 </div>
             </div>
 
