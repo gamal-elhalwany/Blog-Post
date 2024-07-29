@@ -49,6 +49,13 @@
                     @enderror
                 </div>
                 <div class="form-group">
+                    <label for="">Tags</label>
+                    <input name="tags" class="form-control" placeholder="Add the category tags...">
+                    @error('tags')
+                    <p class="text-danger">{{ $message }}</p>
+                    @enderror
+                </div>
+                <div class="form-group">
                     <button type="submit" class="btn btn-outline-primary btn-lg mt-4 mb-6">SUBMIT CATEGORY</button>
                 </div>
             </form>
@@ -56,4 +63,7 @@
         @include('home.partials.Sidebar')
     </div>
 </div>
+<script>
+
+</script>
 @endsection

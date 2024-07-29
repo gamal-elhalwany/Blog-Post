@@ -28,6 +28,17 @@ class Category extends Model
         return $this->belongsTo(Category::class, 'parent_id');
     }
 
+    public function tags()
+    {
+        return $this->belongsToMany(Tag::class,
+        'category_tag',
+        'category_id',
+        'tag_id',
+        'id',
+        'id',
+    );
+    }
+
     public static function booted()
     {
         static::creating(function (Category $category) {
