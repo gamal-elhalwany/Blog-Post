@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Tag;
 use App\Models\Category;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 
 class CategoryController extends Controller
@@ -39,7 +41,27 @@ class CategoryController extends Controller
 
         $user = auth()->user();
         if ($user) {
-            Category::create($request->all());
+
+            $tag_ids = [];
+            if ($request->post('tags')) {
+                $tags = json_decode($request->post('tags'));
+                $allTags = Tag::all();
+                foreach ($tags as $tag_name) {
+                    $slug = Str::slug($tag_name->value);
+                    $tag = $allTags->where('slug', $slug)->first();
+                    if (!$tag) {
+                        $tag = Tag::create([
+                            'name' => $tag_name->value,
+                            'slug' => $slug,
+                        ]);
+                    }
+                    $tag_ids[] = $tag->id;
+                }
+            }
+            $category = Category::create($request->all());
+            // the sync function is used only with belongToMany relationships and here I assigned the tags array to the tags model after creating it to check if there is a category_id then will delete it or if not will create it.
+            $category->tags()->sync($tag_ids);
+
             return redirect()->back()->with('success', 'Category created successfully');
         }
         return redirect()->route('login');

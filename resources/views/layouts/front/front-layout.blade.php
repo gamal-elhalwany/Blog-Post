@@ -21,6 +21,11 @@
     <!-- Libraries Stylesheet -->
     <link href="{{asset('build/assets/lib/owlcarousel/assets/owl.carousel.min.css')}}" rel="stylesheet">
 
+    <!-- Tagify -->
+    <script src="https://cdn.jsdelivr.net/npm/@yaireo/tagify"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@yaireo/tagify/dist/tagify.polyfills.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/@yaireo/tagify/dist/tagify.css" rel="stylesheet" type="text/css" />
+
     <!-- Customized Bootstrap Stylesheet -->
     <link href="{{asset('build/assets/css/style.css')}}" rel="stylesheet">
 </head>
