@@ -3,10 +3,11 @@
 namespace App\Http\Controllers;
 
 use Carbon\Carbon;
+use App\Models\Tag;
 use App\Models\Post;
+use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\Category;
 
 class PostController extends Controller
 {
@@ -35,6 +36,9 @@ class PostController extends Controller
         }
 
         $categories = Category::all();
+        foreach($categories as $category){
+            $tags = $category->tags;
+        }
 
         $topSliderPosts = $query->where('status', 'active')->latest()->take(6)->get();
         $mainSliderPosts = $query->where('status', 'active')->latest()->skip(6)->get();
@@ -51,7 +55,7 @@ class PostController extends Controller
         $latestPostsSection2 = Post::where('status', 'active')->latest()->skip(3)->take(1)->get();
         $latestPostsSection2LastTwo = Post::where('status', 'active')->latest()->skip(4)->take(2)->get();
 
-        return view('home.index', compact('topSliderPosts', 'mainSliderPosts', 'categories', 'categoryBusinessPosts', 'categoryTechnologyPosts', 'categorySportsPosts', 'categoryEntertainmentPosts', 'latestPostsSection1', 'latestPostsSection1LastTwo', 'latestPostsSection2', 'latestPostsSection2LastTwo'));
+        return view('home.index', compact('topSliderPosts', 'mainSliderPosts', 'categories', 'categoryBusinessPosts', 'categoryTechnologyPosts', 'categorySportsPosts', 'categoryEntertainmentPosts', 'latestPostsSection1', 'latestPostsSection1LastTwo', 'latestPostsSection2', 'latestPostsSection2LastTwo', 'tags', 'category'));
     }
 
     /**
@@ -110,7 +114,9 @@ class PostController extends Controller
     public function show(Post $post)
     {
         $comments = $post->comments->where('parent_id', null);
-        return view('dashboard.posts.show', compact('post', 'comments'));
+        $tags = $post->category->tags;
+        // dd($tags);
+        return view('dashboard.posts.show', compact('post', 'comments', 'tags'));
     }
 
     /**

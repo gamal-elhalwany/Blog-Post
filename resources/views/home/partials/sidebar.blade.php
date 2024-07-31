@@ -124,13 +124,11 @@
             <h3 class="m-0">Tags</h3>
         </div>
         <div class="d-flex flex-wrap m-n1">
-            @if($category->tags->count())
-            @foreach($category->tags as $tag)
-            <a href="{{route('category.show', $category->slug)}}" class="btn btn-sm btn-outline-secondary m-1">{{$tag->name}}</a>
-            @endforeach
-            @else
-            <p>There are No Tags for This Category Yet!</p>
-            @endif
+            @forelse($tags as $tag)
+            <a href="{{route('category.show', $category->slug)}}" class="btn btn-sm btn-outline-secondary m-1">{{ucwords($tag->name)}}</a>
+            @empty
+            <p class="ml-3">No Tags found for this category!</p>
+            @endforelse
         </div>
     </div>
     <!-- Tags End -->
