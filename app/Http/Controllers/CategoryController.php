@@ -75,9 +75,10 @@ class CategoryController extends Controller
         $user = auth()->user();
         if ($user) {
             $posts = $category->posts()->paginate(14);
+            $tags = $category->tags;
             $section1 = $posts->slice(0, 4);
             $section2 = $posts->slice(4, 10);
-            return view('dashboard.category.show', compact('category', 'posts', 'section1', 'section2'));
+            return view('dashboard.category.show', compact('category', 'posts', 'section1', 'section2', 'tags'));
         }
         return redirect()->route('login');
     }
