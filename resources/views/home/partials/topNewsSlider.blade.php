@@ -1,5 +1,24 @@
 <!-- Top News Slider Start -->
- @if($topSliderPosts->count())
+ <div class="container-fluid py-3">
+     @if(session()->has('error'))
+     <div class="alert alert-danger alert-dismissible fade show" role="alert">
+         <strong>{{session('error')}}</strong>
+         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+             <span aria-hidden="true">&times;</span>
+         </button>
+     </div>
+     @endif
+     @if(session()->has('success'))
+     <div class="alert alert-success alert-dismissible fade show" role="alert">
+         <strong>{{session()->get('success')}}</strong>
+         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+             <span aria-hidden="true">&times;</span>
+         </button>
+     </div>
+     @endif
+ </div>
+
+@if($topSliderPosts->count())
 <div class="container-fluid py-3">
     <div class="container">
         <div class="owl-carousel owl-carousel-2 carousel-item-3 position-relative">
