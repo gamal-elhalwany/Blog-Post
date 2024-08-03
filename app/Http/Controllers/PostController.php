@@ -7,6 +7,7 @@ use App\Models\Post;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Storage;
 
 class PostController extends Controller
@@ -55,7 +56,13 @@ class PostController extends Controller
         $latestPostsSection2 = Post::where('status', 'active')->latest()->skip(3)->take(1)->get();
         $latestPostsSection2LastTwo = Post::where('status', 'active')->latest()->skip(4)->take(2)->get();
 
-        return view('home.index', compact('topSliderPosts', 'mainSliderPosts', 'categories', 'categoryBusinessPosts', 'categoryTechnologyPosts', 'categorySportsPosts', 'categoryEntertainmentPosts', 'latestPostsSection1', 'latestPostsSection1LastTwo', 'latestPostsSection2', 'latestPostsSection2LastTwo', 'tags', 'category'));
+        // Popular Posts Queries.
+        $popularPostsSection1 = Post::where('status', 'active')->orderBy('views', 'desc')->take(1)->get();
+        $popularPostsSection1LastTwo = Post::where('status', 'active')->orderBy('views', 'desc')->skip(1)->take(2)->get();
+        $popularPostsSection2 = Post::where('status', 'active')->orderBy('views', 'desc')->skip(3)->take(1)->get();
+        $popularPostsSection2LastTwo = Post::where('status', 'active')->orderBy('views', 'desc')->skip(4)->take(2)->get();
+
+        return view('home.index', compact('topSliderPosts', 'mainSliderPosts', 'categories', 'categoryBusinessPosts', 'categoryTechnologyPosts', 'categorySportsPosts', 'categoryEntertainmentPosts', 'latestPostsSection1', 'latestPostsSection1LastTwo', 'latestPostsSection2', 'latestPostsSection2LastTwo', 'tags', 'category', 'popularPostsSection1', 'popularPostsSection1LastTwo', 'popularPostsSection2', 'popularPostsSection2LastTwo'));
     }
 
     /**
@@ -112,8 +119,23 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Post $post)
+    public function show(Request $request, Post $post)
     {
+        // Get the viewed_posts cookie
+        $viewedPosts = json_decode($request->cookie('viewed_posts', '[]'), true);
+
+        // Check if the post has been viewed by this user
+        if (!in_array($post->id, $viewedPosts)) {
+            // Increment the views count
+            $post->increment('views');
+
+            // Add the post ID to the viewed posts
+            $viewedPosts[] = $post->id;
+
+            // Save the updated viewed posts back to the cookie
+            Cookie::queue('viewed_posts', json_encode($viewedPosts), 60 * 24 * 30); // Store for 30 days
+        }
+
         $comments = $post->comments->where('parent_id', null);
         $tags = $post->category->tags;
         return view('dashboard.posts.show', compact('post', 'comments', 'tags'));
