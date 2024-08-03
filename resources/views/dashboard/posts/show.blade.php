@@ -33,6 +33,12 @@
                             <a href="">{{$post->category->name}}</a>
                             <span class="px-1">/</span>
                             <span>{{ $post->created_at->diffforHumans() }}</span>
+                            <a href="{{route('post.edit', $post->id)}}" style="text-decoration: none; color:gray; margin-left:20px;"><i class="fas fa-pencil-alt"></i></a>
+                            <form action="{{route('post.destroy', $post->id)}}" method="post" style="display:inline; position:relative;bottom:2px;">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn"><i class="fas fa-trash-alt"></i></button>
+                            </form>
                         </div>
                         <div>
                             <h3 class="mb-3">{{$post->title}}</h3>
@@ -49,7 +55,10 @@
                     <div class="media mb-4">
                         <img src="img/user.jpg" alt="Image" class="img-fluid mr-3 mt-1" style="width: 45px;">
                         <div class="media-body">
-                            <h6><a href="">{{$comment->user->name}}</a> <small><i>{{$comment->created_at->diffforHumans()}}</i></small></h6>
+                            <h6>
+                                <a href="">{{$comment->user->name}}</a>
+                                <small><i>{{$comment->created_at->diffforHumans()}}</i></small>
+                            </h6>
                             <div class="comment-group">
                                 <span style="float: right;">
                                     <button class="btn edit-btn" data-id="{{$comment->id}}">

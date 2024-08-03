@@ -3,11 +3,11 @@
 namespace App\Http\Controllers;
 
 use Carbon\Carbon;
-use App\Models\Tag;
 use App\Models\Post;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Storage;
 
 class PostController extends Controller
 {
@@ -68,7 +68,8 @@ class PostController extends Controller
         $user = auth()->user();
         if ($user) {
             $categories = Category::all();
-            return view('dashboard.posts.create', compact('categories'));
+            $tags = [];
+            return view('dashboard.posts.create', compact('categories', 'tags'));
         }
         return redirect()->route('login');
     }
@@ -115,7 +116,6 @@ class PostController extends Controller
     {
         $comments = $post->comments->where('parent_id', null);
         $tags = $post->category->tags;
-        // dd($tags);
         return view('dashboard.posts.show', compact('post', 'comments', 'tags'));
     }
 
@@ -125,12 +125,16 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Post $post)
     {
         $user = auth()->user();
         if ($user) {
-            $post = Post::findOrFail($id);
-            return view('posts.edit', ['post' => $post]);
+            if ($user->id == $post->user_id) {
+                $categories = Category::all();
+                $tags = $post->category->tags;
+                return view('dashboard.posts.edit', compact('post', 'categories','tags'));
+            }
+            return abort(404);
         }
         return redirect()->route('login');
     }
@@ -150,20 +154,22 @@ class PostController extends Controller
         $request->validate([
             'title' => 'sometimes|required|min:3|max:255|unique:posts,title',
             'description' => 'sometimes|required|min:3',
-            'image' => 'sometimes|required|image|mimes:jpeg,png,gif,jpg',
+            'image' => 'sometimes|required|image|mimes:jpeg,png,gif,jpg,webp',
+            'category_id' => 'required|exists:categories,id',
         ]);
 
         $post = Post::findOrFail($id);
         if ($request->hasFile('image')) {
-            $imageName = time() . '.' . $request->image->extension();
-            $request->image->move(public_path('images'), $imageName);
-            $post->image = $imageName;
+            $old_image = $post->image;
+            Storage::disk('public')->delete($old_image);
+            $file = $request->file('image');
+            $path = $file->store('uploads/posts', 'public');
         }
         $post->update([
-            'title' => $request->get('title'),
-            'description' => $request->get('description'),
-            'image' => $imageName ?? $post->image,
-            'status' => $request->status,
+            'title' => $request->post('title'),
+            'description' => $request->post('description'),
+            'image' => $path,
+            'category_id' => $request->post('category_id'),
         ]);
         return redirect()->route('post.index')->with('success', 'Post updated successfully');
     }
@@ -179,7 +185,7 @@ class PostController extends Controller
         $post =  Post::findOrFail($id);
         if (auth()->id() == $post->user_id) {
             $post->delete();
-            return redirect()->back()->with('success', 'Post Deleted Successfully.');
+            return redirect()->route('home')->with('success', 'Post Deleted Successfully.');
         }
         return redirect()->back()->with('error', 'You are not allow to this action!');
     }

@@ -127,7 +127,7 @@
             @forelse($tags as $tag)
             <a href="{{route('category.show', $category->slug)}}" class="btn btn-sm btn-outline-secondary m-1">{{ucwords($tag->name)}}</a>
             @empty
-            <p class="ml-3">No Tags found for this category!</p>
+            <p class="ml-3">No Tags found!</p>
             @endforelse
         </div>
     </div>
