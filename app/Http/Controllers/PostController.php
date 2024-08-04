@@ -7,6 +7,7 @@ use App\Models\Post;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Faker\Provider\Lorem;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Storage;
 
@@ -119,7 +120,7 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Request $request, Post $post)
+    public function show(Request $request, Post $post, Category $category)
     {
         // Get the viewed_posts cookie
         $viewedPosts = json_decode($request->cookie('viewed_posts', '[]'), true);
@@ -138,7 +139,7 @@ class PostController extends Controller
 
         $comments = $post->comments->where('parent_id', null);
         $tags = $post->category->tags;
-        return view('dashboard.posts.show', compact('post', 'comments', 'tags'));
+        return view('dashboard.posts.show', compact('post', 'comments', 'tags', 'category'));
     }
 
     /**
@@ -170,9 +171,6 @@ class PostController extends Controller
      */
     public function update(Request $request, $id)
     {
-        /**
-         * TODO: Add a user authentication check.
-         */
         $request->validate([
             'title' => 'sometimes|required|min:3|max:255|unique:posts,title',
             'description' => 'sometimes|required|min:3',
@@ -212,15 +210,43 @@ class PostController extends Controller
         return redirect()->back()->with('error', 'You are not allow to this action!');
     }
 
-    public function inactivatedPosts()
+    // public function inactivatedPosts()
+    // {
+    //     $user = auth()->user();
+    //     if ($user) {
+    //         $posts = Post::where('user_id', $user->id)->where('status',
+    //         '!=', 'active')->get();
+    //         // $posts = Post::where('status', 'inactivate')->get();
+    //         return view('posts.inactive-posts', ['posts' => $posts])->with('success', 'Post Published Successfully.');
+    //     }
+    //     return redirect()->route('login');
+    // }
+
+    public function allLatestPosts()
     {
-        $user = auth()->user();
-        if ($user) {
-            $posts = Post::where('user_id', $user->id)->where('status',
-            '!=', 'active')->get();
-            // $posts = Post::where('status', 'inactivate')->get();
-            return view('posts.inactive-posts', ['posts' => $posts])->with('success', 'Post Published Successfully.');
+        $posts = Post::where('status', 'active')->latest()->paginate(12);
+        $latestBigPosts = $posts->slice(0, 2);
+        $latestSmallPosts = $posts->slice(2, 10);
+
+        $categories = Category::all();
+        foreach($categories as $category){
+            $tags = $category->tags;
         }
-        return redirect()->route('login');
+
+        return view('dashboard.posts.all-latest-posts', compact('posts', 'tags', 'category', 'latestBigPosts', 'latestSmallPosts'));
+    }
+
+    public function popularPosts()
+    {
+        $posts = Post::where('status', 'active')->where('views', '>=', 1)->orderBy('views', 'desc')->paginate(12);
+        $latestBigPosts = $posts->slice(0, 2);
+        $latestSmallPosts = $posts->slice(2, 10);
+
+        $categories = Category::all();
+        foreach($categories as $category){
+            $tags = $category->tags;
+        }
+
+        return view('dashboard.posts.popular-posts', compact('posts', 'tags', 'category', 'latestBigPosts', 'latestSmallPosts'));
     }
 }
