@@ -7,7 +7,7 @@
                     <div class="col-12">
                         <div class="d-flex align-items-center justify-content-between bg-light py-2 px-4 mb-3">
                             <h3 class="m-0">Popular</h3>
-                            <a class="text-secondary font-weight-medium text-decoration-none" href="">View All</a>
+                            <a class="text-secondary font-weight-medium text-decoration-none" href="{{route('posts.popular')}}">View All</a>
                         </div>
                     </div>
                     <div class="col-lg-6">
@@ -78,7 +78,7 @@
                     <div class="col-12">
                         <div class="d-flex align-items-center justify-content-between bg-light py-2 px-4 mb-3">
                             <h3 class="m-0">Latest</h3>
-                            <a class="text-secondary font-weight-medium text-decoration-none" href="">View All</a>
+                            <a class="text-secondary font-weight-medium text-decoration-none" href="{{route('posts.latest')}}">View All</a>
                         </div>
                     </div>
                     @foreach($latestPostsSection1 as $post)
@@ -91,7 +91,7 @@
                                     <span class="px-1">/</span>
                                     <span>{{$post->created_at->diffforHumans()}}</span>
                                 </div>
-                                <a class="h4" href="{{route('post.show', $post->id)}}">{{$post->title}}</a>
+                                <a class="h4" href="{{route('post.show', $post->id)}}">{{Str::limit($post->title, 22)}}</a>
                                 <p class="m-0">{{Str::limit($post->description, 70)}}</p>
                             </div>
                         </div>
@@ -121,7 +121,7 @@
                                     <span class="px-1">/</span>
                                     <span>{{$post->created_at->diffforHumans()}}</span>
                                 </div>
-                                <a class="h4" href="{{route('post.show', $post->id)}}">{{$post->title}}</a>
+                                <a class="h4" href="{{route('post.show', $post->id)}}">{{Str::limit($post->title, 22)}}</a>
                                 <p class="m-0">{{Str::limit($post->description, 70)}}</p>
                             </div>
                         </div>
