@@ -37,14 +37,19 @@
             <h3 class="m-0">Newsletter</h3>
         </div>
         <div class="bg-light text-center p-4 mb-3">
-            <p>Aliqu justo et labore at eirmod justo sea erat diam dolor diam vero kasd</p>
-            <div class="input-group" style="width: 100%;">
-                <input type="text" class="form-control form-control-lg" placeholder="Your Email">
-                <div class="input-group-append">
-                    <button class="btn btn-primary">Sign Up</button>
+            <p>Subscribe to our newsletter.</p>
+            <form id="newsletterForm" action="{{route('newsletters.subscribe')}}" method="POST">
+                @csrf
+                <div class="input-group" style="width: 100%;">
+                    <input type="text" class="form-control form-control-lg" name="email" placeholder="Your Email" required>
+                    <div class="input-group-append">
+                        <button type="submit" class="btn btn-primary">Subscribe</button>
+                    </div>
                 </div>
-            </div>
-            <small>Sit eirmod nonumy kasd eirmod</small>
+                @error('email')
+                <b class="text-danger mt-2">{{$message}}</b>
+                @enderror
+            </form>
         </div>
     </div>
     <!-- Newsletter End -->
