@@ -7,6 +7,7 @@ use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CommentsController;
+use App\Http\Controllers\NewsletterController;
 
 /*
 |--------------------------------------------------------------------------
@@ -53,6 +54,10 @@ Route::middleware('auth')->group(function () {
     Route::post('comments/{comment}/replies', [CommentsController::class, 'storeReply'])->name('comments.replies');
     Route::put('comments/{comment}/update', [CommentsController::class, 'update'])->name('comments.update');
     Route::delete('comments/{comment}/delete', [CommentsController::class, 'destroy'])->name('comments.destroy');
+
+    // Newsletters Routes.
+    Route::get('/newsletters', [NewsletterController::class, 'index'])->name('newsletters');
+    Route::post('/newsletters', [NewsletterController::class, 'subscribe'])->name('newsletters.subscribe');
 });
 
 require __DIR__ . '/auth.php';

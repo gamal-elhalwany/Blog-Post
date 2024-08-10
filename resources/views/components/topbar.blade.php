@@ -11,6 +11,24 @@
             </div>
         </div>
         <div class="col-md-4 text-right d-none d-md-block">
+            @auth
+            <span class="mr-4 dropdown">Hello
+                <a href="java::viod()" class="text-danger dropdown-toggle text-decoration-none" data-toggle="dropdown">
+                    {{ auth()->user()->name }}
+                </a>
+                <ul class="dropdown-menu">
+                    <form action="{{route('logout')}}" method="POST">
+                        @csrf
+                        <button type="submit" class="dropdown-item">Logout</button>
+                    </form>
+                </ul>
+            </span>
+            @else
+            <span class="mr-4 dropdown">
+                <a href="{{route('register')}}" class="col">Register</a>
+                <a href="{{route('login')}}" class="col">Sign up</a>
+            </span>
+            @endauth
             {{$now}}
         </div>
     </div>
