@@ -5,8 +5,10 @@
             <div class="d-flex justify-content-between">
                 <div class="bg-primary text-white text-center py-2" style="width: 100px;">Trending</div>
                 <div class="owl-carousel owl-carousel-1 tranding-carousel position-relative d-inline-flex align-items-center ml-3" style="width: calc(100% - 100px); padding-left: 90px;">
-                    <div class="text-truncate"><a class="text-secondary" href="">Labore sit justo amet eos sed, et sanctus dolor diam eos</a></div>
-                    <div class="text-truncate"><a class="text-secondary" href="">Gubergren elitr amet eirmod et lorem diam elitr, ut est erat Gubergren elitr amet eirmod et lorem diam elitr, ut est erat</a></div>
+                    @foreach($trendingPosts as $post)
+                    <div class="text-truncate"><a class="text-secondary" href="{{route('post.show', $post->id)}}">{{$post->title}}</a>
+                    </div>
+                    @endforeach
                 </div>
             </div>
         </div>

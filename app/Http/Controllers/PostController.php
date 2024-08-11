@@ -41,7 +41,10 @@ class PostController extends Controller
             $tags = $category->tags;
         }
 
+        // Big Slider Posts.
         $topSliderPosts = $query->where('status', 'active')->latest()->take(6)->get();
+
+        // Mini Top Slider Posts.
         $mainSliderPosts = $query->where('status', 'active')->latest()->skip(6)->get();
 
         // Category Mini Slider Posts.
@@ -62,7 +65,11 @@ class PostController extends Controller
         $popularPostsSection2 = Post::where('status', 'active')->orderBy('views', 'desc')->skip(3)->take(1)->get();
         $popularPostsSection2LastTwo = Post::where('status', 'active')->orderBy('views', 'desc')->skip(4)->take(2)->get();
 
-        return view('home.index', compact('topSliderPosts', 'mainSliderPosts', 'categories', 'categoryBusinessPosts', 'categoryTechnologyPosts', 'categorySportsPosts', 'categoryEntertainmentPosts', 'latestPostsSection1', 'latestPostsSection1LastTwo', 'latestPostsSection2', 'latestPostsSection2LastTwo', 'tags', 'category', 'popularPostsSection1', 'popularPostsSection1LastTwo', 'popularPostsSection2', 'popularPostsSection2LastTwo'));
+        // Trending Posts.
+        $trendingPosts = Post::where('status', 'active')->where('views', '>=',
+        10)->orderBy('views', 'desc')->take(5)->get();
+
+        return view('home.index', compact('topSliderPosts', 'mainSliderPosts', 'categories', 'categoryBusinessPosts', 'categoryTechnologyPosts', 'categorySportsPosts', 'categoryEntertainmentPosts', 'latestPostsSection1', 'latestPostsSection1LastTwo', 'latestPostsSection2', 'latestPostsSection2LastTwo', 'tags', 'category', 'popularPostsSection1', 'popularPostsSection1LastTwo', 'popularPostsSection2', 'popularPostsSection2LastTwo', 'trendingPosts'));
     }
 
     /**
