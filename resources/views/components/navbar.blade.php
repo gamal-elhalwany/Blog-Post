@@ -43,13 +43,16 @@
                 </div>
                 <a href="contact.html" class="nav-item nav-link">Contact</a>
             </div>
-            <form action="" method="GET">
+            <form action="{{route('posts.search')}}" method="GET">
                 <div class="input-group ml-auto" style="width: 100%; max-width: 300px;">
-                    <input type="text" class="form-control" placeholder="Keyword">
+                    <input type="text" name="search" class="form-control" placeholder="Keyword">
                     <div class="input-group-append">
                         <button class="input-group-text text-secondary"><i class="fa fa-search"></i></button>
                     </div>
                 </div>
+                @error('search')
+                <p class="text-danger">{{$message}}</p>
+                @enderror
             </form>
         </div>
     </nav>

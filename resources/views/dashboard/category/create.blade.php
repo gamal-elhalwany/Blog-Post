@@ -60,7 +60,7 @@
                 </div>
             </form>
         </div>
-        @include('home.partials.Sidebar')
+        <x-sidebar />
     </div>
 </div>
 <script>

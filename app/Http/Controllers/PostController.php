@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Carbon\Carbon;
 use App\Models\Post;
 use App\Models\Category;
 use Illuminate\Http\Request;
@@ -20,21 +19,6 @@ class PostController extends Controller
     public function index(Request $request)
     {
         $query = Post::query();
-
-        // Filter by user names
-        if ($request->has('user_name')) {
-            $query->whereHas('user', function ($userQuery) use ($request) {
-                $userQuery->where('name', 'like', '%' . $request->input('user_name') . '%');
-            });
-        }
-
-        // Filter by dates
-        if ($request->has('start_date') && $request->has('end_date')) {
-            $startDate = Carbon::parse($request->input('start_date'))->startOfDay();
-            $endDate = Carbon::parse($request->input('end_date'))->endOfDay();
-
-            $query->whereBetween('created_at', [$startDate, $endDate]);
-        }
 
         $categories = Category::all();
         foreach($categories as $category){
@@ -216,18 +200,6 @@ class PostController extends Controller
         return redirect()->back()->with('error', 'You are not allow to this action!');
     }
 
-    // public function inactivatedPosts()
-    // {
-    //     $user = auth()->user();
-    //     if ($user) {
-    //         $posts = Post::where('user_id', $user->id)->where('status',
-    //         '!=', 'active')->get();
-    //         // $posts = Post::where('status', 'inactivate')->get();
-    //         return view('posts.inactive-posts', ['posts' => $posts])->with('success', 'Post Published Successfully.');
-    //     }
-    //     return redirect()->route('login');
-    // }
-
     public function allLatestPosts()
     {
         $posts = Post::where('status', 'active')->latest()->paginate(12);
@@ -255,4 +227,46 @@ class PostController extends Controller
 
         return view('dashboard.posts.popular-posts', compact('posts', 'tags', 'category', 'latestBigPosts', 'latestSmallPosts'));
     }
+
+    public function search_posts(Request $request, Post $post)
+    {
+        $request->validate([
+            'search' => 'required',
+        ]);
+        $search = $request->input('search');
+        $query = Post::query();
+
+        $categories = Category::all();
+        foreach($categories as $category){
+            $tags = $category->tags;
+        }
+
+        // Filter by usernames or Post titles.
+        if ($request->input('search')) {
+            $results = Post::whereHas('user', function($query) use ($search) {
+                $query->where('name', 'LIKE', "%{$search}%");
+            })->orWhere('title', 'LIKE', "%{$search}%")->get();
+        }
+        return view('home.search-result', compact('results', 'tags'));
+
+        // Filter by dates to user it later.
+        // if ($request->has('start_date') && $request->has('end_date')) {
+        //     $startDate = Carbon::parse($request->input('start_date'))->startOfDay();
+        //     $endDate = Carbon::parse($request->input('end_date'))->endOfDay();
+        //     $query->whereBetween('created_at', [$startDate, $endDate]);
+        // }
+    }
+
+    // public function inactivatedPosts()
+    // {
+    //     $user = auth()->user();
+    //     if ($user) {
+    //         $posts = Post::where('user_id', $user->id)->where('status',
+    //         '!=', 'active')->get();
+    //         // $posts = Post::where('status', 'inactivate')->get();
+    //         return view('posts.inactive-posts', ['posts' => $posts])->with('success', 'Post Published Successfully.');
+    //     }
+    //     return redirect()->route('login');
+    // }
+
 }
