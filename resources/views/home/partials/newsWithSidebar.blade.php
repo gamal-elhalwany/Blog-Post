@@ -143,7 +143,7 @@
                 </div>
             </div>
 
-            @include('home.partials.Sidebar')
+            <x-sidebar />
         </div>
     </div>
 </div>

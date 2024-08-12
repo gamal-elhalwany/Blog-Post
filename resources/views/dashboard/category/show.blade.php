@@ -80,7 +80,7 @@
                 </div>
                 <!-- Pagenation Links End -->
             </div>
-            @include('home.partials.sidebar')
+            <x-sidebar />
         </div>
     </div>
 </div>

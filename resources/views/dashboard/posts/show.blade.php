@@ -249,7 +249,7 @@
                 </div>
                 <!-- Comment Form End -->
             </div>
-            @include('home.partials.Sidebar')
+            <x-sidebar />
         </div>
     </div>
 </div>

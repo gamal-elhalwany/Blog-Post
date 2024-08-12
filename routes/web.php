@@ -38,6 +38,7 @@ Route::middleware('auth')->group(function () {
     Route::get('inactivated', [PostController::class, 'inactivatedPosts'])->name('post.inactivated');
     Route::get('latest-posts', [PostController::class, 'allLatestPosts'])->name('posts.latest');
     Route::get('popular-posts', [PostController::class, 'popularPosts'])->name('posts.popular');
+    Route::get('search', [PostController::class, 'search_posts'])->name('posts.search');
 
     // Category Routes.
     Route::get('category', [CategoryController::class, 'index'])->name('category.index');
