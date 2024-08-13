@@ -6,6 +6,7 @@ use App\Models\Post;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Storage;
 
@@ -18,6 +19,7 @@ class PostController extends Controller
      */
     public function index(Request $request)
     {
+        $now = Carbon::now();
         $query = Post::query();
 
         $categories = Category::all();
@@ -53,7 +55,10 @@ class PostController extends Controller
         $trendingPosts = Post::where('status', 'active')->where('views', '>=',
         10)->orderBy('views', 'desc')->take(5)->get();
 
-        return view('home.index', compact('topSliderPosts', 'mainSliderPosts', 'categories', 'categoryBusinessPosts', 'categoryTechnologyPosts', 'categorySportsPosts', 'categoryEntertainmentPosts', 'latestPostsSection1', 'latestPostsSection1LastTwo', 'latestPostsSection2', 'latestPostsSection2LastTwo', 'tags', 'category', 'popularPostsSection1', 'popularPostsSection1LastTwo', 'popularPostsSection2', 'popularPostsSection2LastTwo', 'trendingPosts'));
+        // Featured Posts.
+        $featuredPosts = Post::where('status', 'active')->where('featured', true)->get();
+
+        return view('home.index', compact('topSliderPosts', 'mainSliderPosts', 'categories', 'categoryBusinessPosts', 'categoryTechnologyPosts', 'categorySportsPosts', 'categoryEntertainmentPosts', 'latestPostsSection1', 'latestPostsSection1LastTwo', 'latestPostsSection2', 'latestPostsSection2LastTwo', 'tags', 'category', 'popularPostsSection1', 'popularPostsSection1LastTwo', 'popularPostsSection2', 'popularPostsSection2LastTwo', 'trendingPosts', 'featuredPosts'));
     }
 
     /**
@@ -66,7 +71,9 @@ class PostController extends Controller
         $user = auth()->user();
         if ($user) {
             $categories = Category::all();
-            $tags = [];
+            foreach($categories as $category){
+                $tags = $category->tags;
+            }
             return view('dashboard.posts.create', compact('categories', 'tags'));
         }
         return redirect()->route('login');
@@ -226,6 +233,16 @@ class PostController extends Controller
         }
 
         return view('dashboard.posts.popular-posts', compact('posts', 'tags', 'category', 'latestBigPosts', 'latestSmallPosts'));
+    }
+
+    public function featuredPosts()
+    {
+        $categories = Category::all();
+        foreach($categories as $category){
+            $tags = $category->tags;
+        }
+        $posts = Post::where('status', 'active')->where('featured', true)->get();
+        return view('dashboard.posts.featured-posts', compact('posts', 'tags'));
     }
 
     public function search_posts(Request $request, Post $post)
