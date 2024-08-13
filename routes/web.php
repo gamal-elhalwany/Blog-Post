@@ -35,10 +35,11 @@ Route::middleware('auth')->group(function () {
     // Posts Routes.
     Route::resource('post', PostController::class);
     Route::post('status/{post}', [PostController::class, 'postStatus'])->name('post.status');
-    Route::get('inactivated', [PostController::class, 'inactivatedPosts'])->name('post.inactivated');
     Route::get('latest-posts', [PostController::class, 'allLatestPosts'])->name('posts.latest');
     Route::get('popular-posts', [PostController::class, 'popularPosts'])->name('posts.popular');
+    Route::get('featured-posts', [PostController::class, 'featuredPosts'])->name('posts.featured');
     Route::get('search', [PostController::class, 'search_posts'])->name('posts.search');
+    Route::get('inactivated', [PostController::class, 'inactivatedPosts'])->name('post.inactivated');
 
     // Category Routes.
     Route::get('category', [CategoryController::class, 'index'])->name('category.index');

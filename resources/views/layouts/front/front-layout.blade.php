@@ -84,8 +84,6 @@
     <div class="container-fluid py-4 px-sm-3 px-md-5">
         <p class="m-0 text-center">
             &copy; <a class="font-weight-bold" href="#">{{config('app.name')}}</a>. All Rights Reserved.
-
-            <!--/*** This template is free as long as you keep the footer author’s credit link/attribution link/backlink. If you'd like to use the template without the footer author’s credit link/attribution link/backlink, you can purchase the Credit Removal License from "https://htmlcodex.com/credit-removal". Thank you for your support. ***/-->
             Designed by <a class="font-weight-bold" href="">{{config('app.developer')}}</a>
         </p>
     </div>
