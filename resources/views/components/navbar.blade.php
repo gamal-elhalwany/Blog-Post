@@ -41,7 +41,7 @@
                         <a href="{{route('post.create')}}" class="dropdown-item">Create Post</a>
                     </div>
                 </div>
-                <a href="contact.html" class="nav-item nav-link">Contact</a>
+                <a href="{{route('contact-us')}}" class="nav-item nav-link">Contact</a>
             </div>
             <form action="{{route('posts.search')}}" method="GET">
                 <div class="input-group ml-auto" style="width: 100%; max-width: 300px;">
