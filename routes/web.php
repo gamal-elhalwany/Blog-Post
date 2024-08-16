@@ -4,6 +4,7 @@ use App\Models\Post;
 use App\Models\Category;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\ContactController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CommentsController;
@@ -60,6 +61,10 @@ Route::middleware('auth')->group(function () {
     // Newsletters Routes.
     Route::get('/newsletters', [NewsletterController::class, 'index'])->name('newsletters');
     Route::post('/newsletters', [NewsletterController::class, 'subscribe'])->name('newsletters.subscribe');
+
+    // Contact-us Routes.
+    Route::get('/contact-us', [ContactController::class, 'index'])->name('contact-us');
+    Route::post('/contact-us', [ContactController::class, 'sendContactMail'])->name('contact.send');
 });
 
 require __DIR__ . '/auth.php';
