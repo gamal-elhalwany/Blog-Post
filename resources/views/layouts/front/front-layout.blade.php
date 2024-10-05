@@ -84,7 +84,7 @@
     <div class="container-fluid py-4 px-sm-3 px-md-5">
         <p class="m-0 text-center">
             &copy; <a class="font-weight-bold" href="#">{{config('app.name')}}</a>. All Rights Reserved.
-            Designed by <a class="font-weight-bold" href="">{{config('app.developer')}}</a>
+            Developed by <a class="font-weight-bold" href="">{{config('app.developer')}}</a>
         </p>
     </div>
     <!-- Footer End -->
