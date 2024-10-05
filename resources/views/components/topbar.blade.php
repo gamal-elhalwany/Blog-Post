@@ -19,6 +19,12 @@
                     {{ auth()->user()->name }}
                 </a>
                 <ul class="dropdown-menu">
+                @can('create-user')
+                <li><a class="nav-link" href="{{ route('users.index') }}">Manage Users</a></li>
+                @endcan
+                @can('create-role')
+                <li><a class="nav-link" href="{{ route('roles.index') }}">Manage Role</a></li>
+                @endcan
                     <form action="{{route('logout')}}" method="POST">
                         @csrf
                         <button type="submit" class="dropdown-item">Logout</button>

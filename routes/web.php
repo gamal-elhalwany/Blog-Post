@@ -1,7 +1,5 @@
 <?php
 
-use App\Models\Post;
-use App\Models\Category;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ContactController;
@@ -9,6 +7,8 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CommentsController;
 use App\Http\Controllers\NewsletterController;
+use App\Http\Controllers\Dashboard\RoleController;
+use App\Http\Controllers\Dashboard\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -65,6 +65,10 @@ Route::middleware('auth')->group(function () {
     // Contact-us Routes.
     Route::get('/contact-us', [ContactController::class, 'index'])->name('contact-us');
     Route::post('/contact-us', [ContactController::class, 'sendContactMail'])->name('contact.send');
+
+    // Spatie Permissions Routes.
+    Route::resource('roles', RoleController::class);
+    Route::resource('users', UserController::class);
 });
 
 require __DIR__ . '/auth.php';
