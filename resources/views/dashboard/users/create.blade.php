@@ -61,7 +61,7 @@
                             <strong>Role:</strong>
                             <select name="roles[]" class="form-control py-4" multiple>
                                 @foreach($roles as $value => $role)
-                                <option value="{{ $value }}" {{ in_array($value, $userRole) ? 'selected' : '' }}>{{ $role }}</option>
+                                <option value="{{ $value }}">{{ $role }}</option>
                                 @endforeach
                             </select>
                             @error('roles')

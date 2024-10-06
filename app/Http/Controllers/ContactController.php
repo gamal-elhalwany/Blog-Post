@@ -32,4 +32,13 @@ class ContactController extends Controller
 
         return redirect('/contact-us')->with('success', 'Your Email has been Sent Successfully.');
     }
+
+    public function about_us()
+    {
+        $categories = Category::all();
+        foreach($categories as $category) {
+            $tags = $category->tags;
+        }
+        return view('home.about-us', compact('tags', 'categories'));
+    }
 }

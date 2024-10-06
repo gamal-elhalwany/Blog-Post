@@ -9,6 +9,7 @@ use App\Http\Controllers\CommentsController;
 use App\Http\Controllers\NewsletterController;
 use App\Http\Controllers\Dashboard\RoleController;
 use App\Http\Controllers\Dashboard\UserController;
+use App\Mail\ContactMail;
 
 /*
 |--------------------------------------------------------------------------
@@ -62,9 +63,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/newsletters', [NewsletterController::class, 'index'])->name('newsletters');
     Route::post('/newsletters', [NewsletterController::class, 'subscribe'])->name('newsletters.subscribe');
 
-    // Contact-us Routes.
+    // Contact-us & About-us Routes.
     Route::get('/contact-us', [ContactController::class, 'index'])->name('contact-us');
     Route::post('/contact-us', [ContactController::class, 'sendContactMail'])->name('contact.send');
+    Route::get('about-us', [ContactController::class, 'about_us'])->name('about-us');
 
     // Spatie Permissions Routes.
     Route::resource('roles', RoleController::class);

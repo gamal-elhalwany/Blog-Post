@@ -34,6 +34,7 @@
                         @endforeach
                     </div>
                 </div>
+                @can('create-post')
                 <div class="nav-item dropdown">
                     <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Options</a>
                     <div class="dropdown-menu rounded-0 m-0">
@@ -41,6 +42,8 @@
                         <a href="{{route('post.create')}}" class="dropdown-item">Create Post</a>
                     </div>
                 </div>
+                @endcan
+                <a href="{{route('about-us')}}" class="nav-item nav-link">About us</a>
                 <a href="{{route('contact-us')}}" class="nav-item nav-link">Contact</a>
             </div>
             <form action="{{route('posts.search')}}" method="GET">
