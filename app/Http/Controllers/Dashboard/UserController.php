@@ -15,6 +15,14 @@ class UserController extends Controller
 {
     use Taggable;
 
+    function __construct()
+    {
+         $this->middleware('permission:list-user|create-user|edit-user|delete-user', ['only' => ['index','store']]);
+         $this->middleware('permission:create-user', ['only' => ['create','store']]);
+         $this->middleware('permission:edit-user', ['only' => ['edit','update']]);
+         $this->middleware('permission:delete-user', ['only' => ['destroy']]);
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -52,7 +60,7 @@ class UserController extends Controller
             'name' => 'required',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|same:confirm-password',
-            'roles' => 'required'
+            'roles' => 'sometimes|required'
         ]);
 
         $input = $request->all();

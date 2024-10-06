@@ -273,17 +273,4 @@ class PostController extends Controller
         //     $query->whereBetween('created_at', [$startDate, $endDate]);
         // }
     }
-
-    // public function inactivatedPosts()
-    // {
-    //     $user = auth()->user();
-    //     if ($user) {
-    //         $posts = Post::where('user_id', $user->id)->where('status',
-    //         '!=', 'active')->get();
-    //         // $posts = Post::where('status', 'inactivate')->get();
-    //         return view('posts.inactive-posts', ['posts' => $posts])->with('success', 'Post Published Successfully.');
-    //     }
-    //     return redirect()->route('login');
-    // }
-
 }
