@@ -34,7 +34,7 @@
             @else
             <span class="mr-4 dropdown">
                 <a href="{{route('register')}}" class="col">Register</a>
-                <a href="{{route('login')}}" class="col">Sign up</a>
+                <a href="{{route('login')}}" class="col">Sign in</a>
             </span>
             @endauth
             {{$now}}
