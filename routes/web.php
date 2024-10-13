@@ -7,9 +7,9 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CommentsController;
 use App\Http\Controllers\NewsletterController;
+use App\Http\Controllers\SocialiteController;
 use App\Http\Controllers\Dashboard\RoleController;
 use App\Http\Controllers\Dashboard\UserController;
-use App\Mail\ContactMail;
 
 /*
 |--------------------------------------------------------------------------
@@ -72,5 +72,10 @@ Route::middleware('auth')->group(function () {
     Route::resource('roles', RoleController::class);
     Route::resource('users', UserController::class);
 });
+
+// Socialite Routes.
+Route::get('auth/{provider}/redirect', [SocialiteController::class, 'redirect'])->name('auth.socialite.redirect');
+Route::get('auth/{provider}/callback', [SocialiteController::class, 'callback'])->name('auth.socialite.callback');
+// https://fikrtanys.com/
 
 require __DIR__ . '/auth.php';
