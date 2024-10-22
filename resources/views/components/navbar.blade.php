@@ -38,7 +38,9 @@
                 <div class="nav-item dropdown">
                     <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Options</a>
                     <div class="dropdown-menu rounded-0 m-0">
+                        @can('create-category')
                         <a href="{{route('category.create')}}" class="dropdown-item">Create Category</a>
+                        @endcan
                         <a href="{{route('post.create')}}" class="dropdown-item">Create Post</a>
                     </div>
                 </div>

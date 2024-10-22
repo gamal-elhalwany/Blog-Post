@@ -11,7 +11,10 @@ class Tag extends Model
     public $timestamps = false;
     protected $fillable = ['name', 'slug'];
 
-    public function categories () {
-        return $this->belongsToMany(Category::class);
+    public function posts()
+    {
+        return $this->belongsToMany(
+            Post::class
+        )->withPivot('id', 'tag_id', 'post_id');
     }
 }

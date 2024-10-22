@@ -59,6 +59,16 @@
                     <p class="text-red-500 mt-3 mb-3">{{ $message }}</p>
                     @enderror
                 </div>
+
+                <div class="form-group">
+                    <label for="">Tags</label>
+                    <input type="text" name="tags" class="form-control" placeholder="Post tags...">
+                    <p class="alert alert-danger mt-2">If you haven't added tags for this Post now, you won't be able to do so again.</p>
+                    @error('tags')
+                    <p class="text-danger">{{ $message }}</p>
+                    @enderror
+                </div>
+
                 <div class="form-group">
                     <button type="submit" class="btn btn-outline-primary btn-lg mt-4 mb-6">UPDATE POST</button>
                 </div>

@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Mail\ContactMail;
-use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 
@@ -11,11 +10,7 @@ class ContactController extends Controller
 {
     public function index()
     {
-        $categories = Category::all();
-        foreach($categories as $category) {
-            $tags = $category->tags;
-        }
-        return view('home.contact-us', compact('categories', 'category', 'tags'));
+        return view('home.contact-us');
     }
 
     public function sendContactMail(Request $request)
@@ -35,10 +30,6 @@ class ContactController extends Controller
 
     public function about_us()
     {
-        $categories = Category::all();
-        foreach($categories as $category) {
-            $tags = $category->tags;
-        }
-        return view('home.about-us', compact('tags', 'categories'));
+        return view('home.about-us');
     }
 }

@@ -2,30 +2,36 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
+use App\Models\Tag;
 use App\Models\Post;
 use App\Models\Category;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Carbon\Carbon;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Storage;
+use App\Notifications\PostStatusNotification;
 
 class PostController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:create-post', ['only' => ['create', 'store']]);
+        $this->middleware('permission:edit-post', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:show-post', ['only' => ['show']]);
+        $this->middleware('permission:delete-post', ['only' => ['destroy']]);
+    }
+
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index(Request $request, Post $post)
     {
         $now = Carbon::now();
         $query = Post::query();
-
-        $categories = Category::all();
-        foreach($categories as $category){
-            $tags = $category->tags;
-        }
 
         // Big Slider Posts.
         $topSliderPosts = $query->where('status', 'active')->latest()->take(6)->get();
@@ -34,10 +40,10 @@ class PostController extends Controller
         $mainSliderPosts = $query->where('status', 'active')->latest()->skip(6)->get();
 
         // Category Mini Slider Posts.
-        $categoryTechnologyPosts = Post::where('category_id', 1)->get()->take(4);
-        $categorySportsPosts = Post::where('category_id', 2)->get()->take(4);
-        $categoryBusinessPosts = Post::where('category_id', 4)->get()->take(4);
-        $categoryEntertainmentPosts = Post::where('category_id', 5)->get()->take(4);
+        $categoryTechnologyPosts = Post::where('category_id', 1)->where('status', 'active')->get()->take(4);
+        $categorySportsPosts = Post::where('category_id', 2)->where('status', 'active')->get()->take(4);
+        $categoryBusinessPosts = Post::where('category_id', 4)->where('status', 'active')->get()->take(4);
+        $categoryEntertainmentPosts = Post::where('category_id', 5)->where('status', 'active')->get()->take(4);
 
         // Latest Posts Queries.
         $latestPostsSection1 = Post::where('status', 'active')->latest()->take(1)->get();
@@ -52,13 +58,16 @@ class PostController extends Controller
         $popularPostsSection2LastTwo = Post::where('status', 'active')->orderBy('views', 'desc')->skip(4)->take(2)->get();
 
         // Trending Posts.
-        $trendingPosts = Post::where('status', 'active')->where('views', '>=',
-        10)->orderBy('views', 'desc')->take(5)->get();
+        $trendingPosts = Post::where('status', 'active')->where(
+            'views',
+            '>=',
+            10
+        )->orderBy('views', 'desc')->take(5)->get();
 
         // Featured Posts.
         $featuredPosts = Post::where('status', 'active')->where('featured', true)->get();
 
-        return view('home.index', compact('topSliderPosts', 'mainSliderPosts', 'categories', 'categoryBusinessPosts', 'categoryTechnologyPosts', 'categorySportsPosts', 'categoryEntertainmentPosts', 'latestPostsSection1', 'latestPostsSection1LastTwo', 'latestPostsSection2', 'latestPostsSection2LastTwo', 'tags', 'category', 'popularPostsSection1', 'popularPostsSection1LastTwo', 'popularPostsSection2', 'popularPostsSection2LastTwo', 'trendingPosts', 'featuredPosts'));
+        return view('home.index', compact('topSliderPosts', 'mainSliderPosts', 'categoryBusinessPosts', 'categoryTechnologyPosts', 'categorySportsPosts', 'categoryEntertainmentPosts', 'latestPostsSection1', 'latestPostsSection1LastTwo', 'latestPostsSection2', 'latestPostsSection2LastTwo', 'popularPostsSection1', 'popularPostsSection1LastTwo', 'popularPostsSection2', 'popularPostsSection2LastTwo', 'trendingPosts', 'featuredPosts'));
     }
 
     /**
@@ -69,12 +78,8 @@ class PostController extends Controller
     public function create()
     {
         $user = auth()->user();
-        if ($user) {
-            $categories = Category::all();
-            foreach($categories as $category){
-                $tags = $category->tags;
-            }
-            return view('dashboard.posts.create', compact('categories', 'tags'));
+        if ($user->hasAnyRole('Owner', 'Super-admin', 'Admin', 'Editor')) {
+            return view('dashboard.posts.create');
         }
         return redirect()->route('login');
     }
@@ -98,15 +103,36 @@ class PostController extends Controller
 
             $file = $request->file('image');
             $path = $file->store('uploads/posts', 'public');
-            Post::create([
-                'title' => $request->get('title'),
-                'description' => $request->get('description'),
-                'image' => $path,
-                'user_id' => auth()->user()->id,
-                'category_id' => $request->category_id,
-            ]);
 
-            return redirect()->route('post.index')->with('success', 'Post created successfully.');
+            $tag_ids = [];
+            if ($request->post('tags')) {
+                $tags = json_decode($request->post('tags'));
+                $allTags = Tag::all();
+                foreach ($tags as $tag_name) {
+                    $slug = Str::slug($tag_name->value);
+                    $tag = $allTags->where('slug', $slug)->first();
+                    if (!$tag) {
+                        $tag = Tag::create([
+                            'name' => $tag_name->value,
+                            'slug' => $slug,
+                        ]);
+                    }
+                    $tag_ids[] = $tag->id;
+                }
+
+                $post = Post::create([
+                    'title' => $request->get('title'),
+                    'description' => $request->get('description'),
+                    'image' => $path,
+                    'user_id' => auth()->user()->id,
+                    'category_id' => $request->category_id,
+                ]);
+
+                // the sync function is used only with belongToMany relationships and here I assigned the tags array to the tags model after creating it to check if there is a category_id then will delete it or if not will create it.
+                $post->tags()->sync($tag_ids);
+            }
+
+            return redirect()->route('post.index')->with('success', 'Post created successfully and Waiting to be approved!.');
         }
         return redirect()->route('login');
     }
@@ -135,8 +161,7 @@ class PostController extends Controller
         }
 
         $comments = $post->comments->where('parent_id', null);
-        $tags = $post->category->tags;
-        return view('dashboard.posts.show', compact('post', 'comments', 'tags', 'category'));
+        return view('dashboard.posts.show', compact('post', 'comments'));
     }
 
     /**
@@ -149,12 +174,10 @@ class PostController extends Controller
     {
         $user = auth()->user();
         if ($user) {
-            if ($user->id == $post->user_id) {
-                $categories = Category::all();
-                $tags = $post->category->tags;
-                return view('dashboard.posts.edit', compact('post', 'categories','tags'));
+            if ($user->id == $post->user_id || $user->hasAnyRole('Owner', 'Super-admin', 'Admin', 'Editor')) {
+                return view('dashboard.posts.edit', compact('post'));
             }
-            return abort(404);
+            return abort(403);
         }
         return redirect()->route('login');
     }
@@ -168,11 +191,12 @@ class PostController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $request->validate([
+        $validated = $request->validate([
             'title' => 'sometimes|required|min:3|max:255|unique:posts,title',
             'description' => 'sometimes|required|min:3',
             'image' => 'sometimes|required|image|mimes:jpeg,png,gif,jpg,webp',
             'category_id' => 'required|exists:categories,id',
+            'tags.*.value' => 'exists:tags,id',
         ]);
 
         $post = Post::findOrFail($id);
@@ -181,6 +205,8 @@ class PostController extends Controller
             Storage::disk('public')->delete($old_image);
             $file = $request->file('image');
             $path = $file->store('uploads/posts', 'public');
+        } else {
+            $path = $post->image;
         }
         $post->update([
             'title' => $request->post('title'),
@@ -188,6 +214,31 @@ class PostController extends Controller
             'image' => $path,
             'category_id' => $request->post('category_id'),
         ]);
+
+        $tag_ids = [];
+        if ($request->post('tags')) {
+
+            if ($post->tags) {
+                foreach ($post->tags as $tag) {
+                    $tag->delete();
+                }
+            }
+
+            $tags = json_decode($request->post('tags'));
+            $allTags = Tag::all();
+            foreach ($tags as $tag_name) {
+                $slug = Str::slug($tag_name->value);
+                $tag = $allTags->where('slug', $slug)->first();
+                if (!$tag) {
+                    $tag = Tag::create([
+                        'name' => $tag_name->value,
+                        'slug' => $slug,
+                    ]);
+                }
+                $tag_ids[] = $tag->id;
+            }
+        }
+        $post->tags()->sync($tag_ids);
         return redirect()->route('post.index')->with('success', 'Post updated successfully');
     }
 
@@ -209,40 +260,66 @@ class PostController extends Controller
 
     public function allLatestPosts()
     {
-        $posts = Post::where('status', 'active')->latest()->paginate(12);
-        $latestBigPosts = $posts->slice(0, 2);
-        $latestSmallPosts = $posts->slice(2, 10);
-
-        $categories = Category::all();
-        foreach($categories as $category){
-            $tags = $category->tags;
+        $user = auth()->user();
+        if ($user->hasAnyRole('Owner', 'Super-admin', 'Admin', 'Editor')) {
+            $posts = Post::where('status', 'active')->latest()->paginate(12);
+            $latestBigPosts = $posts->slice(0, 2);
+            $latestSmallPosts = $posts->slice(2, 10);
+            return view('dashboard.posts.all-latest-posts', compact('posts', 'latestBigPosts', 'latestSmallPosts'));
         }
-
-        return view('dashboard.posts.all-latest-posts', compact('posts', 'tags', 'category', 'latestBigPosts', 'latestSmallPosts'));
+        return abort(403);
     }
 
     public function popularPosts()
     {
-        $posts = Post::where('status', 'active')->where('views', '>=', 1)->orderBy('views', 'desc')->paginate(12);
-        $latestBigPosts = $posts->slice(0, 2);
-        $latestSmallPosts = $posts->slice(2, 10);
+        $user = auth()->user();
+        if ($user->hasAnyRole('Owner', 'Super-admin', 'Admin', 'Editor')) {
+            $posts = Post::where('status', 'active')->where('views', '>=', 1)->orderBy('views', 'desc')->paginate(12);
+            $latestBigPosts = $posts->slice(0, 2);
+            $latestSmallPosts = $posts->slice(2, 10);
 
-        $categories = Category::all();
-        foreach($categories as $category){
-            $tags = $category->tags;
+            return view('dashboard.posts.popular-posts', compact('posts', 'latestBigPosts', 'latestSmallPosts'));
         }
-
-        return view('dashboard.posts.popular-posts', compact('posts', 'tags', 'category', 'latestBigPosts', 'latestSmallPosts'));
+        return abort(403);
     }
 
     public function featuredPosts()
     {
-        $categories = Category::all();
-        foreach($categories as $category){
-            $tags = $category->tags;
+        $user = auth()->user();
+        if ($user->hasAnyRole('Owner', 'Super-admin', 'Admin', 'Editor')) {
+            $posts = Post::where('status', 'active')->where('featured', true)->get();
+            return view('dashboard.posts.featured-posts', compact('posts'));
         }
-        $posts = Post::where('status', 'active')->where('featured', true)->get();
-        return view('dashboard.posts.featured-posts', compact('posts', 'tags'));
+        return abort(403);
+    }
+
+    public function pendingPosts()
+    {
+        $user = auth()->user();
+        if ($user->hasAnyRole('Owner', 'Super-admin', 'Admin', 'Editor')) {
+            $posts = Post::where('status', '!=', 'active')->get();
+            return view('dashboard.posts.manage-posts', compact('posts'));
+        }
+    }
+
+    public function approve(Post $post)
+    {
+        $post->status = 'active';
+        $post->save();
+
+        // Send notification to the post owner
+        $post->user->notify(new PostStatusNotification($post, 'approved'));
+        return redirect()->back()->with('success', 'Post approved successfully.');
+    }
+
+    public function reject(Post $post)
+    {
+        $post->status = 'rejected';
+        $post->save();
+
+        // Send notification to the post owner
+        $post->user->notify(new PostStatusNotification($post, 'Rejected'));
+        return redirect()->back()->with('success', 'Post rejected successfully.');
     }
 
     public function search_posts(Request $request, Post $post)
@@ -253,18 +330,17 @@ class PostController extends Controller
         $search = $request->input('search');
         $query = Post::query();
 
-        $categories = Category::all();
-        foreach($categories as $category){
-            $tags = $category->tags;
-        }
-
         // Filter by usernames or Post titles.
         if ($request->input('search')) {
-            $results = Post::whereHas('user', function($query) use ($search) {
-                $query->where('name', 'LIKE', "%{$search}%");
-            })->orWhere('title', 'LIKE', "%{$search}%")->get();
+            $search = $request->input('search');
+            $results = Post::where('status', 'active')
+                ->where(function ($query) use ($search) {
+                    $query->whereHas('user', function ($query) use ($search) {
+                        $query->where('name', 'LIKE', "%{$search}%");
+                    })->orWhere('title', 'LIKE', "%{$search}%");
+                })->get();
         }
-        return view('home.search-result', compact('results', 'tags'));
+        return view('home.search-result', compact('results'));
 
         // Filter by dates to user it later.
         // if ($request->has('start_date') && $request->has('end_date')) {
