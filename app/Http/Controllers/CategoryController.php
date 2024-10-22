@@ -2,19 +2,29 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Tag;
 use App\Models\Category;
-use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:create-category', ['only' => ['index', 'create', 'store']]);
+        $this->middleware('permission:edit-category', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:show-category', ['only' => ['show']]);
+        $this->middleware('permission:delete-category', ['only' => ['destroy']]);
+    }
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        //
+        $user = auth()->user();
+        if ($user->hasAnyRole('Owner', 'Super-admin', 'Admin')) {
+            return view('dashboard.category.index');
+        }
+        return abort(403,  'You do not have permission to access this page!');
     }
 
     /**
@@ -23,12 +33,10 @@ class CategoryController extends Controller
     public function create()
     {
         $user = auth()->user();
-        if ($user) {
-            $categories = Category::all();
-            $tags = [];
-            return view('dashboard.category.create', compact('categories', 'tags'));
+        if ($user->hasAnyRole('Owner', 'Super-admin', 'Admin')) {
+            return view('dashboard.category.create');
         }
-        return redirect()->route('login');
+        return abort(403,  'You do not have permission to access this page');
     }
 
     /**
@@ -41,31 +49,11 @@ class CategoryController extends Controller
         ]);
 
         $user = auth()->user();
-        if ($user) {
-
-            $tag_ids = [];
-            if ($request->post('tags')) {
-                $tags = json_decode($request->post('tags'));
-                $allTags = Tag::all();
-                foreach ($tags as $tag_name) {
-                    $slug = Str::slug($tag_name->value);
-                    $tag = $allTags->where('slug', $slug)->first();
-                    if (!$tag) {
-                        $tag = Tag::create([
-                            'name' => $tag_name->value,
-                            'slug' => $slug,
-                        ]);
-                    }
-                    $tag_ids[] = $tag->id;
-                }
-            }
+        if ($user->hasAnyRole('Owner', 'Super-admin', 'Admin')) {
             $category = Category::create($request->all());
-            // the sync function is used only with belongToMany relationships and here I assigned the tags array to the tags model after creating it to check if there is a category_id then will delete it or if not will create it.
-            $category->tags()->sync($tag_ids);
-
             return redirect()->back()->with('success', 'Category created successfully');
         }
-        return redirect()->route('login');
+        return abort(403,  'You do not have permission to access this page');
     }
 
     /**
@@ -74,14 +62,13 @@ class CategoryController extends Controller
     public function show(Category $category)
     {
         $user = auth()->user();
-        if ($user) {
+        if ($user->hasAnyRole('Owner', 'Super-admin', 'Admin')) {
             $posts = $category->posts()->paginate(14);
-            $tags = $category->tags;
             $section1 = $posts->slice(0, 4);
             $section2 = $posts->slice(4, 10);
-            return view('dashboard.category.show', compact('category', 'posts', 'section1', 'section2', 'tags'));
+            return view('dashboard.category.show', compact('category', 'posts', 'section1', 'section2'));
         }
-        return redirect()->route('login');
+        return abort(403,  'You do not have permission to access this page');
     }
 
     /**
@@ -90,10 +77,10 @@ class CategoryController extends Controller
     public function edit(Category $category)
     {
         $user = auth()->user();
-        if ($user) {
+        if ($user->hasAnyRole('Owner', 'Super-admin', 'Admin')) {
             return view('dashboard.category.edit', compact('category'));
         }
-        return redirect()->route('login');
+        return abort(403,  'You do not have permission to access this page');
     }
 
     /**
@@ -101,7 +88,16 @@ class CategoryController extends Controller
      */
     public function update(Request $request, Category $category)
     {
-        //
+        $request->validate([
+            'name' => 'required|string|min:3',
+        ]);
+
+        $user = auth()->user();
+        if ($user->hasAnyRole('Owner', 'Super-admin', 'Admin')) {
+            $category->update($request->all());
+            return redirect()->back()->with('success', 'Category updated successfully ☺');
+        }
+        return abort(403,  'You do not have permission to access this page');
     }
 
     /**
@@ -110,10 +106,10 @@ class CategoryController extends Controller
     public function destroy(Category $category)
     {
         $user = auth()->user();
-        if ($user) {
+        if ($user->hasAnyRole('Owner', 'Super-admin', 'Admin')) {
             $category->delete();
             return redirect()->back()->with('success', 'The category is deleted.');
         }
-        return redirect()->route('login');
+        return abort(403,  'You do not have permission to access this page');
     }
 }

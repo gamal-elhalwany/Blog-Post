@@ -17,7 +17,7 @@
                 @csrf
                 <div class="form-group">
                     <label for="name">name</label>
-                    <input type="text" name="name" class="form-control">
+                    <input type="text" name="name" class="form-control" placeholder="Enter Category name">
                     @error('name')
                     <p class="text-red-500 mt-3 mb-3">{{ $message }}</p>
                     @enderror
@@ -36,7 +36,7 @@
                 </div>
                 <div class="form-group">
                     <label for="description">Description</label>
-                    <textarea name="description" class="form-control"></textarea>
+                    <textarea name="description" class="form-control" placeholder="Put some description here"></textarea>
                     @error('description')
                     <p class="text-red-500 mt-3 mb-3">{{ $message }}</p>
                     @enderror
@@ -46,13 +46,6 @@
                     <input type="file" name="image" class="form-control">
                     @error('image')
                     <p class="text-red-500 mt-3 mb-3">{{ $message }}</p>
-                    @enderror
-                </div>
-                <div class="form-group">
-                    <label for="">Tags</label>
-                    <input name="tags" class="form-control" placeholder="Add the category tags...">
-                    @error('tags')
-                    <p class="text-danger">{{ $message }}</p>
                     @enderror
                 </div>
                 <div class="form-group">

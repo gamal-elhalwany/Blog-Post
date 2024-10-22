@@ -1,7 +1,7 @@
 <!-- Topbar Start -->
 <div class="container-fluid">
     <div class="row align-items-center bg-light px-lg-5">
-        <div class="col-12 col-md-8">
+        <div class="col-12 col-md-6">
             <div class="d-flex justify-content-between">
                 <div class="bg-primary text-white text-center py-2" style="width: 100px;">Trending</div>
                 <div class="owl-carousel owl-carousel-1 tranding-carousel position-relative d-inline-flex align-items-center ml-3" style="width: calc(100% - 100px); padding-left: 90px;">
@@ -12,7 +12,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-4 text-right d-none d-md-block">
+        <div class="col-md-5 text-right d-none d-md-block">
             @auth
             <span class="mr-4 dropdown">Hello
                 <a href="java::viod()" class="text-danger dropdown-toggle text-decoration-none" data-toggle="dropdown">
@@ -24,6 +24,12 @@
                 @endcan
                 @can('create-role')
                 <li><a class="nav-link" href="{{ route('roles.index') }}">Manage Role</a></li>
+                @endcan
+                @can('create-user')
+                <li><a class="nav-link" href="{{route('manage.posts')}}">Manage Posts</a></li>
+                @endcan
+                @can('create-category')
+                <li><a class="nav-link" href="{{route('category.index')}}">Manage Categories</a></li>
                 @endcan
                     <form action="{{route('logout')}}" method="POST">
                         @csrf
@@ -38,6 +44,9 @@
             </span>
             @endauth
             {{$now}}
+        </div>
+        <div class="col-md-1 text-left">
+            <x-notifications-menu />
         </div>
     </div>
     <div class="row align-items-center py-2 px-lg-5">

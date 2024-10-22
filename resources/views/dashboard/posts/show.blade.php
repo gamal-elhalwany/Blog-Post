@@ -33,12 +33,16 @@
                             <a href="">{{$post->category->name}}</a>
                             <span class="px-1">/</span>
                             <span>{{ $post->created_at->diffforHumans() }}</span>
+                            @can('edit-post')
                             <a href="{{route('post.edit', $post->id)}}" style="text-decoration: none; color:gray; margin-left:20px;"><i class="fas fa-pencil-alt"></i></a>
+                            @endcan
+                            @can('delete-post')
                             <form action="{{route('post.destroy', $post->id)}}" method="post" style="display:inline; position:relative;bottom:2px;">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="btn"><i class="fas fa-trash-alt"></i></button>
                             </form>
+                            @endcan
                         </div>
                         <div>
                             <h3 class="mb-3">{{$post->title}}</h3>

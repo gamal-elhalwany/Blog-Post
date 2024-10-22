@@ -10,7 +10,10 @@ class Category extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'name', 'slug', 'description', 'parent_id'
+        'name',
+        'slug',
+        'description',
+        'parent_id'
     ];
 
     public function posts()
@@ -26,17 +29,6 @@ class Category extends Model
     public function parent()
     {
         return $this->belongsTo(Category::class, 'parent_id');
-    }
-
-    public function tags()
-    {
-        return $this->belongsToMany(Tag::class,
-        'category_tag',
-        'category_id',
-        'tag_id',
-        'id',
-        'id',
-    );
     }
 
     public static function booted()

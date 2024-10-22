@@ -86,13 +86,13 @@
         <div class="bg-light py-2 px-4 mb-3">
             <h3 class="m-0">Tags</h3>
         </div>
-        <div class="d-flex flex-wrap m-n1">
-            @forelse($tags as $tag)
-            <a href="{{route('category.show', $category->slug)}}" class="btn btn-sm btn-outline-secondary m-1">{{ucwords($tag->name)}}</a>
-            @empty
-            <p class="ml-3">No Tags found!</p>
-            @endforelse
-        </div>
+        @foreach($tags as $tag)
+        @foreach($tag->posts as $post)
+        @if($post->status === 'active')
+        <a href="{{route('post.show', $post->id)}}" class="btn btn-sm btn-outline-secondary m-1">{{$tag->name}}</a>
+        @endif
+        @endforeach
+        @endforeach
     </div>
     <!-- Tags End -->
 </div>

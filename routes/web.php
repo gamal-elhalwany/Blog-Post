@@ -41,7 +41,11 @@ Route::middleware('auth')->group(function () {
     Route::get('popular-posts', [PostController::class, 'popularPosts'])->name('posts.popular');
     Route::get('featured-posts', [PostController::class, 'featuredPosts'])->name('posts.featured');
     Route::get('search', [PostController::class, 'search_posts'])->name('posts.search');
-    Route::get('inactivated', [PostController::class, 'inactivatedPosts'])->name('post.inactivated');
+
+    // Admin Manage Posts Routes.
+    Route::get('manage-posts', [PostController::class, 'pendingPosts'])->name('manage.posts');
+    Route::patch('/posts/{post}/approve', [PostController::class, 'approve'])->name('posts.approve');
+    Route::patch('/posts/{post}/reject', [PostController::class, 'reject'])->name('posts.reject');
 
     // Category Routes.
     Route::get('category', [CategoryController::class, 'index'])->name('category.index');
@@ -76,6 +80,5 @@ Route::middleware('auth')->group(function () {
 // Socialite Routes.
 Route::get('auth/{provider}/redirect', [SocialiteController::class, 'redirect'])->name('auth.socialite.redirect');
 Route::get('auth/{provider}/callback', [SocialiteController::class, 'callback'])->name('auth.socialite.callback');
-// https://fikrtanys.com/
 
 require __DIR__ . '/auth.php';

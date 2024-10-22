@@ -27,6 +27,15 @@ class Post extends Model
         return $this->hasMany(Comment::class);
     }
 
+    public function tags()
+    {
+        return $this->belongsToMany(Tag::class)->withPivot(
+            'id',
+            'post_id',
+            'tag_id'
+        );
+    }
+
     public function getDefaultImageAttribute()
     {
         if (!$this->image) {

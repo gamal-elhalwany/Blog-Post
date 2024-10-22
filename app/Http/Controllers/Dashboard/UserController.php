@@ -8,14 +8,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
 use App\Http\Controllers\Controller;
-use App\Traits\Taggable;
 use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
-    use Taggable;
-
-    function __construct()
+    public function __construct()
     {
          $this->middleware('permission:list-user|create-user|edit-user|delete-user', ['only' => ['index','store']]);
          $this->middleware('permission:create-user', ['only' => ['create','store']]);
@@ -31,8 +28,7 @@ class UserController extends Controller
     public function index(Request $request)
     {
         $data = User::orderBy('id','DESC')->paginate(5);
-        list($tags) = $this->getTags();
-        return view('dashboard.users.index', compact('data', 'tags'))
+        return view('dashboard.users.index', compact('data'))
             ->with('i', ($request->input('page', 1) - 1) * 5);
     }
 
@@ -44,8 +40,7 @@ class UserController extends Controller
     public function create()
     {
         $roles = Role::pluck('name','name')->all();
-        list($tags) = $this->getTags();
-        return view('dashboard.users.create',compact('roles','tags'));
+        return view('dashboard.users.create',compact('roles'));
     }
 
     /**
@@ -82,8 +77,7 @@ class UserController extends Controller
     public function show($id)
     {
         $user = User::find($id);
-        list($tags) = $this->getTags();
-        return view('dashboard.users.show',compact('user','tags'));
+        return view('dashboard.users.show',compact('user'));
     }
 
     /**
@@ -97,9 +91,8 @@ class UserController extends Controller
         $user = User::find($id);
         $roles = Role::pluck('name','name')->all();
         $userRole = $user->roles->pluck('name','name')->all();
-        list($tags) = $this->getTags();
 
-        return view('dashboard.users.edit',compact('user','roles','userRole', 'tags'));
+        return view('dashboard.users.edit',compact('user','roles','userRole'));
     }
 
     /**

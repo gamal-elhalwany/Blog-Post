@@ -32,6 +32,13 @@
 
 <body>
 
+    <!-- Hidden div -->
+    <div class="hidden" id="notification-msg">
+            <h2>This is the hidden content!</h2>
+            <button class="btn btn-outline-danger m-3" id="closeDivBtn">Close</button>
+        </div>
+    </div>
+
     <x-topbar />
     <x-navbar />
     @yield('breadcrumb')
@@ -61,14 +68,20 @@
                     @endforeach
                 </div>
             </div>
+            <!-- Start Tags -->
             <div class="col-lg-3 col-md-6 mb-5">
                 <h4 class="font-weight-bold mb-4">Tags</h4>
                 <div class="d-flex flex-wrap m-n1">
                     @foreach($tags as $tag)
-                    <a href="{{route('category.show', $category->slug)}}" class="btn btn-sm btn-outline-secondary m-1">{{$tag->name}}</a>
+                    @foreach($tag->posts as $post)
+                    @if($post->status === 'active')
+                    <a href="{{route('post.show', $post->id)}}" class="btn btn-sm btn-outline-secondary m-1">{{$tag->name}}</a>
+                    @endif
+                    @endforeach
                     @endforeach
                 </div>
             </div>
+            <!-- End Tags -->
             <div class="col-lg-3 col-md-6 mb-5">
                 <h4 class="font-weight-bold mb-4">Quick Links</h4>
                 <div class="d-flex flex-column justify-content-start">

@@ -7,12 +7,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
 use App\Http\Controllers\Controller;
-use App\Traits\Taggable;
 use Spatie\Permission\Models\Permission;
 
 class RoleController extends Controller
 {
-    use Taggable;
     /**
      * Display a listing of the resource.
      *
@@ -34,8 +32,7 @@ class RoleController extends Controller
     public function index(Request $request)
     {
         $roles = Role::orderBy('id','DESC')->paginate(5);
-        list($tags) = $this->getTags();
-        return view('dashboard.roles.index',compact('roles', 'tags'))
+        return view('dashboard.roles.index',compact('roles'))
             ->with('i', ($request->input('page', 1) - 1) * 5);
     }
 
@@ -47,8 +44,7 @@ class RoleController extends Controller
     public function create()
     {
         $permissions = Permission::get();
-        list($tags) = $this->getTags();
-        return view('dashboard.roles.create',compact('permissions', 'tags'));
+        return view('dashboard.roles.create',compact('permissions'));
     }
 
     /**
@@ -82,9 +78,8 @@ class RoleController extends Controller
         $rolePermissions = Permission::join("role_has_permissions","role_has_permissions.permission_id","=","permissions.id")
             ->where("role_has_permissions.role_id",$id)
             ->get();
-        list($tags) = $this->getTags();
 
-        return view('dashboard.roles.show',compact('role','rolePermissions','tags'));
+        return view('dashboard.roles.show',compact('role','rolePermissions'));
     }
 
     /**
@@ -100,9 +95,8 @@ class RoleController extends Controller
         $rolePermissions = DB::table("role_has_permissions")->where("role_has_permissions.role_id",$id)
             ->pluck('role_has_permissions.permission_id','role_has_permissions.permission_id')
             ->all();
-           list($tags) = $this->getTags();
 
-        return view('dashboard.roles.edit',compact('role','permission','rolePermissions','tags'));
+        return view('dashboard.roles.edit',compact('role','permission','rolePermissions'));
     }
 
     /**
