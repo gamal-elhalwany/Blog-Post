@@ -58,7 +58,7 @@ class PostStatusNotification extends Notification
     {
         return [
             'header' => 'Hello ' . $notifiable->name . ' Your Post Status has been updated',
-            'body' => 'Your post status has been updated to ' . $this->status,
+            'body' => 'Your post ' . $this->post->title . ' status has been updated to ' .  $this->status,
             'post' => $this->post->title,
         ];
     }

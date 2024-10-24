@@ -28,17 +28,10 @@
                     <tr>
                         <th scope="row">{{$loop->iteration}}</th>
                         <th>{{$category->name}}</th>
-                        <th>{{$category->discription}}</th>
+                        <th style="width: 50%;">{{$category->description}}</th>
+                        <th>{{$category->parent->name ?? ''}}</th>
                         <th scope="row">
                             <a href="{{route('category.show', $category->slug)}}" class="btn btn-info"><i class="fa fa-eye"></i></a>
-
-                            <form action="{{ route('category.show', $category->slug) }}" method="POST" style="display: inline;">
-                                @csrf
-                                @method('PATCH')
-                                <button class="btn btn-success" type="submit">
-                                    <i class="fa fa-check"></i>
-                                </button>
-                            </form>
 
                             <form method='POST' action="{{ route('category.destroy', $category->id) }}" style='display:inline'>
                                 @csrf

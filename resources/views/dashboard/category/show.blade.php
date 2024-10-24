@@ -38,7 +38,7 @@
                                     <span>{{$post->created_at->diffforHumans()}}</span>
                                 </div>
                                 <div style="height:150px; overflow:hidden;">
-                                    <a class="h4" href="{{route('post.show', $post->id)}}">{{$post->title}}</a>
+                                    <a class="h4" href="{{route('post.show', $post->id)}}">{{Str::limit($post->title, 22)}}</a>
                                     <p class="m-0">{{Str::limit($post->description, 150)}}</p>
                                 </div>
                             </div>

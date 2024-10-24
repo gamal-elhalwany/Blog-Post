@@ -12,6 +12,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Storage;
 use App\Notifications\PostStatusNotification;
+use Illuminate\Notifications\DatabaseNotification;
 
 class PostController extends Controller
 {
@@ -348,5 +349,16 @@ class PostController extends Controller
         //     $endDate = Carbon::parse($request->input('end_date'))->endOfDay();
         //     $query->whereBetween('created_at', [$startDate, $endDate]);
         // }
+    }
+
+    public function markAsRead ($id)
+    {
+        // Find the notification by ID and mark it as read
+        $notification = DatabaseNotification::find($id);
+
+        if ($notification) {
+            $notification->markAsRead();
+        }
+        return view('dashboard.posts.notification', compact('notification'));
     }
 }
