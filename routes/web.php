@@ -75,6 +75,9 @@ Route::middleware('auth')->group(function () {
     // Spatie Permissions Routes.
     Route::resource('roles', RoleController::class);
     Route::resource('users', UserController::class);
+
+    // Mark Notification As Read Route.
+    Route::put('notifications/mark-as-read/{id}', [PostController::class, 'markAsRead'])->name('mark-as-read');
 });
 
 // Socialite Routes.

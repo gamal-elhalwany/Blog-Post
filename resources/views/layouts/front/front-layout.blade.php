@@ -32,13 +32,6 @@
 
 <body>
 
-    <!-- Hidden div -->
-    <div class="hidden" id="notification-msg">
-            <h2>This is the hidden content!</h2>
-            <button class="btn btn-outline-danger m-3" id="closeDivBtn">Close</button>
-        </div>
-    </div>
-
     <x-topbar />
     <x-navbar />
     @yield('breadcrumb')
